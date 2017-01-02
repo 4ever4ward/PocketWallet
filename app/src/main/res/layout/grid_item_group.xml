@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="75dp"
+    android:layout_height="75dp"
+    android:background="@drawable/grid_item_touch_selector"
+    android:elevation="5dp">
+
+
+    <FrameLayout
+        android:layout_width="66dp"
+        android:layout_height="66dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:background="@drawable/rounded_rectangle">
+
+        <ImageView
+            android:id="@+id/groupImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:src="@drawable/ic_expense_group_drinks" />
+
+        <FrameLayout
+            android:id="@+id/groupNameContainer"
+            android:layout_width="match_parent"
+            android:layout_height="17dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorCyan">
+
+            <TextView
+                android:id="@+id/groupNameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:text="Fastfood"
+                android:textAlignment="center"
+                android:textColor="@color/colorBezh"
+                android:textSize="14sp" />
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+
+</FrameLayout>

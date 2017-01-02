@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_expenses"
+        icon="@drawable/ic_expense_group_fastfood"
+        title="Expense" />
+    <tab
+        id="@+id/tab_incomes"
+        icon="@android:drawable/ic_menu_compass"
+        title="Income" />
+
+    <tab
+        id="@+id/tab_piggy"
+        icon="@android:drawable/ic_input_get"
+        title="Piggy" />
+
+    <tab
+        id="@+id/tab_statistics"
+        icon="@android:drawable/ic_menu_preferences"
+        title="Statistics" />
+    <!--<tab-->
+        <!--id="@+id/tab_shopList"-->
+        <!--icon="@android:drawable/ic_menu_crop"-->
+        <!--title="shopList" />-->
+</tabs>

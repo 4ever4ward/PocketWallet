@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">PocketWallet</string>
+
+    <!--Strings for expenses groups-->
+    <string name="expense_group_type">expense</string>
+
+    <string name="eat_group_name">Eat</string>
+    <string name="fastfood_group_name">Fastfood</string>
+    <string name="drinks_group_name">Drinks</string>
+    <string name="utilityBills_group_name">Utility Bills</string>
+
+    <string name="new_group_name">New</string>
+
+    <!--Strings for incomes groups-->
+    <string name="income_group_type">income</string>
+
+    <string name="salary_group_name">Salary</string>
+    <string name="bank_group_name">Bank</string>
+    <string name="other_group_name">Other</string>
+
+    <string name="remaining_on_card">On card:</string>
+    <string name="remaining_in_cash">In cash:</string>
+    
+    <string name="total_spending_cost">Total:   %1$s</string>
+
+    <string-array name="spinner_content">
+        <item name="salary_group_name">Salary</item>
+        <item name="bank_group_name">Bank</item>
+        <item name="other_group_name">Other</item>
+    </string-array>
+
+</resources>

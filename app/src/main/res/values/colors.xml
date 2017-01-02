@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4caf50</color>
+    <color name="colorPrimaryDark">#2f7132</color>
+    <color name="colorAccent">#ff9800</color>
+
+    <color name="holeColor">#007db77f</color>
+    <color name="colorBezh">#fffddd</color>
+    <color name="colorRed">#f82727</color>
+    <color name="colorGreen">#25dc3e</color>
+    <color name="colorCyan">#00bff3</color>
+    <color name="colorMaterialRed">#e64a19</color>
+
+    <color name="colorGreenSelected">#d266e9a9</color>
+</resources>

@@ -101,60 +101,13 @@ public class Utility {
         return series;
     }
 
-    // TODO: delete this comment
-//    public static ValueLineSeries createExpenseLineChartSeries(Context context, String tableName) {
-//
-//        AppDBHelper appDBHelper = new AppDBHelper(context, tableName, null, AppDBHelper.DB_VERSION);
-//        ValueLineSeries series = new ValueLineSeries();
-//        DateTime dateTime;
-//        DateTime firstExpDate;
-//        DateTime secondExpDate;
-//        float daySum = 0.0f;
-//
-//
-//
-//        List<Expense> expenseList = appDBHelper.getAllExpenseAsList(tableName);
-//        expenseList.add(new Expense(0,"","",0.0));
-//
-//        series.addPoint(new ValueLinePoint("", 0f));
-//
-//        if (expenseList.size() != 1) {
-//
-//            for (int i = 0; i < expenseList.size() - 1; i++) {
-//
-//                firstExpDate = new DateTime(expenseList.get(i).getDate());
-//                secondExpDate = new DateTime(expenseList.get(i + 1).getDate());
-//
-//                if (firstExpDate.getYear() == secondExpDate.getYear()
-//                        && firstExpDate.getMonthOfYear() == secondExpDate.getMonthOfYear()
-//                        && firstExpDate.getDayOfMonth() == secondExpDate.getDayOfMonth()) {
-//
-//                    if (daySum == 0.0) {
-//                        daySum += expenseList.get(i).getCost();
-//                    }
-//                    daySum += expenseList.get(i + 1).getCost();
-//
-//                } else {
-//                    if (daySum == 0.0) {
-//                        daySum += expenseList.get(i).getCost();
-//                    }
-//                    dateTime = new DateTime(expenseList.get(i).getDate());
-//                    series.addPoint(new ValueLinePoint(dateTime.toString("dd.MM.yy"), daySum));
-//                    daySum = 0.0f;
-//                }
-//
-//
-//            }
-//        } else {daySum = (float) expenseList.get(0).getCost();}
-//
-//        series.addPoint(new ValueLinePoint("", 0f));
-//
-//        series.setColor(0xFF56B7F1);
-//
-//        return series;
-//
-//    }
 
+    /**
+     *
+     *
+     * @param context Context
+     * @return List
+     */
     public static ArrayList<Group> getGroupsCashSum(Context context) {
         AppDBHelper expenseDBHelper = new AppDBHelper(context, AppDBContract.ExpensesEntry.TABLE_NAME, null, 1);
         AppDBHelper groupDBHelper = new AppDBHelper(context, AppDBContract.GroupsEntry.TABLE_NAME, null, 1);
@@ -266,6 +219,12 @@ public class Utility {
         return amount;
     }
 
+    /**
+     *
+     * @param groupName The name of the group
+     * @param context Context
+     * @return Returns the drawable, which depends from groupName
+     */
     public static int getIconIdByGroupName (String groupName, Context context) {
 
         if (groupName.equals(context.getString(R.string.fastfood_group_name))) {
@@ -296,6 +255,14 @@ public class Utility {
         return Color.TRANSPARENT;
     }
 
+
+    /**
+     * Move money between money types
+     *
+     * @param from String value, which contain name of from money type in SharedPreferences
+     * @param to String value, which contain name of to money type in SharedPreferences
+     * @param value float value, which contain quantity of money
+     */
     public static void moveMoney(String from, String to, float value) {
         SharedPreferences.Editor editor = MainActivity.mSettings.edit();
 

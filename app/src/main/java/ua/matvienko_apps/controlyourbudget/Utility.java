@@ -279,6 +279,13 @@ public class Utility {
 
     }
 
+    /**
+     * Get all spent money by group priority
+     *
+     * @param context Context
+     * @param groupPriority that contain priority num
+     * @return All spent money with this priority
+     */
     public static float getAllSpentMoneyByGroupPriority(Context context, int groupPriority) {
         ArrayList<Group> groupSumList = getGroupsCashSum(context);
         float result_sum = 0;

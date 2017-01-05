@@ -12,7 +12,7 @@ import com.roughike.bottombar.OnTabSelectListener;
 import ua.matvienko_apps.controlyourbudget.R;
 import ua.matvienko_apps.controlyourbudget.fragments.ExpenseFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.IncomeFragment;
-import ua.matvienko_apps.controlyourbudget.fragments.SearchFragment;
+import ua.matvienko_apps.controlyourbudget.fragments.PiggyFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.StatisticsFragment;
 
 
@@ -62,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                     case R.id.tab_piggy: {
-//                        PiggyFragment piggyFragment = new PiggyFragment();
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, piggyFragment).commit();
-                        SearchFragment searchFragment = new SearchFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, searchFragment).commit();
+                        PiggyFragment piggyFragment = new PiggyFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, piggyFragment).commit();
+//                        SearchFragment searchFragment = new SearchFragment();
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, searchFragment).commit();
                         break;
                     }
                     case R.id.tab_statistics: {

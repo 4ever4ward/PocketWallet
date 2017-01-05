@@ -106,7 +106,7 @@ public class Utility {
      *
      *
      * @param context Context
-     * @return List
+     * @return List of Group with sum of all spent moneys
      */
     public static ArrayList<Group> getGroupsCashSum(Context context) {
         AppDBHelper expenseDBHelper = new AppDBHelper(context, AppDBContract.ExpensesEntry.TABLE_NAME, null, 1);

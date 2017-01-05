@@ -11,13 +11,6 @@
         android:layout_weight="7"
         android:isScrollContainer="false">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:isScrollContainer="false"
-            android:src="@color/colorPrimary" />
-
         <TextView
             android:id="@+id/requiredMoneyView"
             android:layout_width="wrap_content"
@@ -27,14 +20,11 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="32sp" />
 
-        <TextView
-            android:id="@+id/piggyAmountView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:text="0.0"
-            android:textColor="@android:color/white"
-            android:textSize="32sp" />
+        <ImageView
+            android:id="@+id/piggyImage"
+            android:layout_width="320dp"
+            android:layout_height="360dp"
+            android:layout_gravity="center_horizontal|center_vertical" />
 
 
         <Button
@@ -43,6 +33,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:text="CrashPiggy" />
+
+        <TextView
+            android:id="@+id/piggyAmountView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:text="0.0"
+            android:textColor="@android:color/white"
+            android:textSize="32sp" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/addMoneyToPiggy"

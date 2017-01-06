@@ -1,8 +1,9 @@
 package ua.matvienko_apps.controlyourbudget.fragments;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -32,6 +33,9 @@ public class PiggyFragment extends Fragment {
     private Button crashPiggyButton;
     private ImageView piggyImageView;
 
+    private SoundPool sounds;
+    private int piggy_joy_sound;
+
     private AnimationDrawable piggyBlinkingAnimation;
     private CustomAnimationDrawable piggyJoyAnimation;
 
@@ -51,9 +55,11 @@ public class PiggyFragment extends Fragment {
         requiredMoneyView = (TextView) rootView.findViewById(R.id.requiredMoneyView);
         FloatingActionButton addMoneyToPiggy = (FloatingActionButton) rootView.findViewById(R.id.addMoneyToPiggy);
 
+
         piggyJoyAnimation = new CustomAnimationDrawable((AnimationDrawable) getResources().getDrawable(R.drawable.piggy_joy_animation)) {
             @Override
             public void onAnimationFinish() {
+                piggyJoyAnimation.stop();
                 startBlinking();
             }
         };
@@ -62,14 +68,9 @@ public class PiggyFragment extends Fragment {
         piggyImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                piggyImageView.setBackgroundDrawable(piggyJoyAnimation);
-                piggyJoyAnimation.start();
-
+                startJoyAnimation();
             }
         });
-
-
-
 
         crashPiggyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,32 +106,48 @@ public class PiggyFragment extends Fragment {
 
     }
 
-//    public void startJoy() {
-
-//
-//        piggyBlingkinAnimation.start();
-//    }
+    public void startJoyAnimation() {
+        piggyImageView.setBackgroundDrawable(piggyJoyAnimation);
+        piggyBlinkingAnimation.stop();
+        new Thread() {
+            public void run() {
+                MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.piggy_joy_sound);
+                mediaPlayer.setVolume(0.2f, 0.2f);
+                mediaPlayer.start();
+            }
+        }.start();
+        piggyJoyAnimation.start();
+    }
 
 
     @Override
     public void onResume() {
         super.onResume();
 
-        startBlinking();
-
         float requiredMoney = MainActivity.mSettings.getFloat(MainActivity.REQUIRED_MONEY, 0);
         float remainingMoney = MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, 0);
+        float piggyMoney = MainActivity.mSettings.getFloat(MainActivity.PIGGY_MONEY, 0);
 
-        if (remainingMoney == 0) {
-            requiredMoneyView.setTextColor(Color.WHITE);
-        } else if (requiredMoney == remainingMoney) {
-            requiredMoneyView.setTextColor(Color.DKGRAY);
-        } else if (requiredMoney >= remainingMoney) {
-            requiredMoneyView.setTextColor(Color.GREEN);
+        float piggyAmountValue = Float.parseFloat(piggyAmountView.getText().toString());
+
+        if (piggyMoney > piggyAmountValue && piggyBlinkingAnimation != null) {
+            startJoyAnimation();
+            Log.e("TAG", piggyMoney + ":      :" + Float.parseFloat(piggyAmountView.getText().toString()));
         } else {
-            requiredMoneyView.setTextColor(Color.RED);
+            startBlinking();
         }
 
-        piggyAmountView.setText(Float.toString(MainActivity.mSettings.getFloat(MainActivity.PIGGY_MONEY, 0)));
+
+//        if (remainingMoney == 0) {
+//            requiredMoneyView.setTextColor(Color.WHITE);
+//        } else if (requiredMoney == remainingMoney) {
+//            requiredMoneyView.setTextColor(Color.DKGRAY);
+//        } else if (requiredMoney >= remainingMoney) {
+//            requiredMoneyView.setTextColor(Color.GREEN);
+//        } else {
+//            requiredMoneyView.setTextColor(Color.RED);
+//        }
+
+        piggyAmountView.setText(piggyMoney + "");
     }
 }

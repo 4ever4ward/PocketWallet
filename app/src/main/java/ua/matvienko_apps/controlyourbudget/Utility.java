@@ -101,7 +101,6 @@ public class Utility {
         return series;
     }
 
-
     /**
      *
      *
@@ -241,7 +240,7 @@ public class Utility {
 
     public static String formatMoney (float money) {
         DecimalFormat dFormat = new DecimalFormat("####,###,##0.00");
-        return dFormat.format(money).replaceAll(","," ");
+        return dFormat.format(money);
     }
 
     public static int getColorByGroupPriority (int groupPriority, Context context) {
@@ -299,5 +298,4 @@ public class Utility {
 
         return result_sum;
     }
-
 }

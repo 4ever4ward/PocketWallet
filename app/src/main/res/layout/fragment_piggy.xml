@@ -22,8 +22,8 @@
 
         <ImageView
             android:id="@+id/piggyImage"
-            android:layout_width="320dp"
-            android:layout_height="360dp"
+            android:layout_width="350dp"
+            android:layout_height="400dp"
             android:layout_gravity="center_horizontal|center_vertical" />
 
 

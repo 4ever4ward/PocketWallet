@@ -13,17 +13,20 @@ public abstract class CustomAnimationDrawable extends AnimationDrawable {
      * Handles the animation callback.
      */
     Handler mAnimationHandler;
+    private boolean animationPlaying;
 
     public CustomAnimationDrawable(AnimationDrawable aniDrawable) {
         /* Add each frame to our animation drawable */
         for (int i = 0; i < aniDrawable.getNumberOfFrames(); i++) {
             this.addFrame(aniDrawable.getFrame(i), aniDrawable.getDuration(i));
         }
+        animationPlaying = false;
     }
 
     @Override
     public void start() {
         super.start();
+        animationPlaying = true;
         /*
          * Call super.start() to call the base class start animation method.
          * Then add a handler to call onAnimationFinish() when the total
@@ -33,6 +36,7 @@ public abstract class CustomAnimationDrawable extends AnimationDrawable {
         mAnimationHandler.postDelayed(new Runnable() {
 
             public void run() {
+                animationPlaying = false;
                 onAnimationFinish();
             }
         }, getTotalDuration());
@@ -53,6 +57,10 @@ public abstract class CustomAnimationDrawable extends AnimationDrawable {
         }
 
         return iDuration;
+    }
+
+    public boolean isAnimationPlaying() {
+        return animationPlaying;
     }
 
     /**

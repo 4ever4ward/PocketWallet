@@ -13,7 +13,7 @@
         android:layout_margin="10dp"
         app:cardBackgroundColor="@color/colorBezh"
         app:cardCornerRadius="12dp"
-        app:cardElevation="8dp">
+        app:cardElevation="3dp">
 
 
         <LinearLayout
@@ -107,26 +107,24 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_marginTop="25dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="65dp">
 
                 <Button
                     android:id="@+id/btnSubmitAdd"
-                    style="?android:attr/buttonBarStyle"
                     android:layout_width="153dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="40dp"
                     android:background="@drawable/rounded_rectangle_left"
                     android:drawableBottom="@drawable/ic_submit"
                     android:paddingBottom="7dp" />
 
                 <Button
                     android:id="@+id/btnCancelAdd"
-                    style="?android:attr/buttonBarStyle"
                     android:layout_width="153dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="40dp"
                     android:background="@drawable/rounded_rectangle_right"
                     android:drawableBottom="@drawable/ic_cancel"
-                    android:paddingBottom="5dp" />
+                    android:paddingBottom="7dp" />
 
             </LinearLayout>
 

@@ -8,7 +8,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="7"
         android:isScrollContainer="false">
 
         <TextView
@@ -22,8 +21,10 @@
 
         <ImageView
             android:id="@+id/piggyImage"
-            android:layout_width="350dp"
-            android:layout_height="400dp"
+            android:layout_width="match_parent"
+            android:layout_height="445dp"
+            android:soundEffectsEnabled="false"
+            android:src="@drawable/piggy_joy_part_4"
             android:layout_gravity="center_horizontal|center_vertical" />
 
 

@@ -2,12 +2,16 @@ package ua.matvienko_apps.controlyourbudget.fragments;
 
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +26,8 @@ import ua.matvienko_apps.controlyourbudget.activity.MainActivity;
 import ua.matvienko_apps.controlyourbudget.activity.PiggyDialogActivity;
 import ua.matvienko_apps.controlyourbudget.classes.CustomAnimationDrawable;
 
+import static android.content.Context.SENSOR_SERVICE;
+
 /**
  * Created by alex_ on 16-Sep-16.
  */
@@ -33,11 +39,10 @@ public class PiggyFragment extends Fragment {
     private Button crashPiggyButton;
     private ImageView piggyImageView;
 
-    private SoundPool sounds;
-    private int piggy_joy_sound;
 
     private AnimationDrawable piggyBlinkingAnimation;
     private CustomAnimationDrawable piggyJoyAnimation;
+    private CustomAnimationDrawable piggyCryAnimation;
 
 
     View dialogView;
@@ -49,14 +54,14 @@ public class PiggyFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_piggy, null);
         dialogView = inflater.inflate(R.layout.dialog_piggy_view, null);
 
+        piggyAmountView = (TextView) rootView.findViewById(R.id.piggyAmountView);
         piggyImageView = (ImageView) rootView.findViewById(R.id.piggyImage);
         crashPiggyButton = (Button) rootView.findViewById(R.id.crashPiggyButton);
-        piggyAmountView = (TextView) rootView.findViewById(R.id.piggyAmountView);
         requiredMoneyView = (TextView) rootView.findViewById(R.id.requiredMoneyView);
+
         FloatingActionButton addMoneyToPiggy = (FloatingActionButton) rootView.findViewById(R.id.addMoneyToPiggy);
 
-
-        piggyJoyAnimation = new CustomAnimationDrawable((AnimationDrawable) getResources().getDrawable(R.drawable.piggy_joy_animation)) {
+        piggyJoyAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(getContext(), R.drawable.piggy_joy_animation)) {
             @Override
             public void onAnimationFinish() {
                 piggyJoyAnimation.stop();
@@ -64,11 +69,37 @@ public class PiggyFragment extends Fragment {
             }
         };
 
+        piggyCryAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(getContext(), R.drawable.piggy_cry_animation)) {
+            @Override
+            public void onAnimationFinish() {
+                piggyCryAnimation.stop();
+                startBlinking();
+            }
+        };
+
+
+        SensorManager sensorManager = (SensorManager) getContext().getSystemService(SENSOR_SERVICE);
+        Sensor accelerometr = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+
+        sensorManager.registerListener(eventListener, accelerometr, SensorManager.SENSOR_DELAY_NORMAL);
 
         piggyImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startJoyAnimation();
+                if (!piggyJoyAnimation.isRunning())
+                    if (!piggyCryAnimation.isRunning())
+                        startCryAnimation();
+            }
+        });
+
+        piggyImageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (!piggyCryAnimation.isRunning())
+                    if (!piggyJoyAnimation.isRunning())
+                        startJoyAnimation();
+                return true;
             }
         });
 
@@ -90,7 +121,8 @@ public class PiggyFragment extends Fragment {
                     Intent intent = new Intent(getContext(), PiggyDialogActivity.class);
                     startActivity(intent);
 
-                } else Log.e("PiggyFragment", "App not contains PIGGY_MONEY or CASH_REMAINING_MONEY");
+                } else
+                    Log.e("PiggyFragment", "App not contains PIGGY_MONEY or CASH_REMAINING_MONEY");
             }
         });
 
@@ -107,16 +139,28 @@ public class PiggyFragment extends Fragment {
     }
 
     public void startJoyAnimation() {
-        piggyImageView.setBackgroundDrawable(piggyJoyAnimation);
+        piggyImageView.setBackground(piggyJoyAnimation);
         piggyBlinkingAnimation.stop();
+        piggyJoyAnimation.start();
+
         new Thread() {
             public void run() {
                 MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.piggy_joy_sound);
-                mediaPlayer.setVolume(0.2f, 0.2f);
-                mediaPlayer.start();
+                if (mediaPlayer != null) {
+                    mediaPlayer.setVolume(0.4f, 0.4f);
+                    if (!mediaPlayer.isPlaying()) {
+                        mediaPlayer.start();
+                    }
+                }
+
             }
         }.start();
-        piggyJoyAnimation.start();
+    }
+
+    public void startCryAnimation() {
+        piggyImageView.setBackground(piggyCryAnimation);
+        piggyBlinkingAnimation.stop();
+        piggyCryAnimation.start();
     }
 
 
@@ -137,17 +181,20 @@ public class PiggyFragment extends Fragment {
             startBlinking();
         }
 
+        piggyAmountView.setText(Float.toString(piggyMoney));
 
-//        if (remainingMoney == 0) {
-//            requiredMoneyView.setTextColor(Color.WHITE);
-//        } else if (requiredMoney == remainingMoney) {
-//            requiredMoneyView.setTextColor(Color.DKGRAY);
-//        } else if (requiredMoney >= remainingMoney) {
-//            requiredMoneyView.setTextColor(Color.GREEN);
-//        } else {
-//            requiredMoneyView.setTextColor(Color.RED);
-//        }
-
-        piggyAmountView.setText(piggyMoney + "");
     }
+
+    SensorEventListener eventListener = new SensorEventListener() {
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            requiredMoneyView.setText(String.valueOf(event.values[0]));
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
 }

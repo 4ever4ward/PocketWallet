@@ -1,5 +1,6 @@
 package ua.matvienko_apps.controlyourbudget.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
@@ -13,12 +14,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ua.matvienko_apps.controlyourbudget.R;
 import ua.matvienko_apps.controlyourbudget.Utility;
@@ -189,6 +194,28 @@ public class PiggyFragment extends Fragment {
 
         @Override
         public void onSensorChanged(SensorEvent event) {
+            Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
+                return;
+            float mSensorX, mSensorY;
+            switch (display.getRotation()) {
+                case Surface.ROTATION_0:
+                    mSensorX = event.values[0];
+                    mSensorY = event.values[1];
+                    break;
+                case Surface.ROTATION_90:
+                    mSensorX = -event.values[1];
+                    mSensorY = event.values[0];
+                    break;
+                case Surface.ROTATION_180:
+                    mSensorX = -event.values[0];
+                    mSensorY = -event.values[1];
+                    Toast.makeText(getContext(), "lkdjfklsjdf " + mSensorX, Toast.LENGTH_SHORT).show();
+                    break;
+                case Surface.ROTATION_270:
+                    mSensorX = event.values[1];
+                    mSensorY = -event.values[0];
+            }
             requiredMoneyView.setText(String.valueOf(event.values[0]));
         }
 

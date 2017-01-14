@@ -180,7 +180,11 @@ public class ExpenseFragment extends Fragment {
         update();
     }
 
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        expensesDbHelper.close();
+    }
 }
 
 

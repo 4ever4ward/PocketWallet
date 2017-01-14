@@ -121,4 +121,10 @@ public class IncomeFragment extends Fragment {
         super.onResume();
         update();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        incomeDbHelper.close();
+    }
 }

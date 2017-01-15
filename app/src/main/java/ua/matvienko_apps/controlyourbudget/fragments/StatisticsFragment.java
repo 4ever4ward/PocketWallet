@@ -3,6 +3,7 @@ package ua.matvienko_apps.controlyourbudget.fragments;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,7 @@ public class StatisticsFragment extends Fragment {
         circleChart.setData(data);
         circleChart.setDescription("");
         circleChart.setEntryLabelTextSize(12);
+        circleChart.setEntryLabelColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
         circleChart.animateXY(2000,2000);
         circleChart.setHoleColor(Color.TRANSPARENT);
 
@@ -103,6 +105,5 @@ public class StatisticsFragment extends Fragment {
         return rootView;
 
     }
-
 
 }

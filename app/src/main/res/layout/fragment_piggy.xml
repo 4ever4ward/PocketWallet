@@ -10,14 +10,6 @@
         android:layout_height="match_parent"
         android:isScrollContainer="false">
 
-        <TextView
-            android:id="@+id/requiredMoneyView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|start"
-            android:text="0.0"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="32sp" />
 
         <ImageView
             android:id="@+id/piggyImage"
@@ -28,11 +20,13 @@
             android:layout_gravity="center_horizontal|center_vertical" />
 
 
-        <Button
+        <ImageView
             android:id="@+id/crashPiggyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_empty_piggy"
             android:text="CrashPiggy" />
 
         <TextView

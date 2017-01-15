@@ -13,9 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ua.matvienko_apps.controlyourbudget.R;
 import ua.matvienko_apps.controlyourbudget.Utility;
@@ -34,12 +34,12 @@ public class PiggyFragment extends Fragment {
     private final String LOG_TAG = PiggyFragment.class.getSimpleName();
 
     private TextView piggyAmountView;
-    private TextView requiredMoneyView;
-    private Button crashPiggyButton;
-    private ImageView piggyImageView;
 
     private SensorManager sensorManager;
     private Piggy piggy;
+    private float piggyMoney;
+
+    private boolean piggyIsEmptied;
 
     @Nullable
     @Override
@@ -48,24 +48,28 @@ public class PiggyFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_piggy, null);
 
         piggyAmountView = (TextView) rootView.findViewById(R.id.piggyAmountView);
-        piggyImageView = (ImageView) rootView.findViewById(R.id.piggyImage);
-        crashPiggyButton = (Button) rootView.findViewById(R.id.crashPiggyButton);
-        requiredMoneyView = (TextView) rootView.findViewById(R.id.requiredMoneyView);
+        ImageView piggyImageView = (ImageView) rootView.findViewById(R.id.piggyImage);
+        ImageView crashPiggyButton = (ImageView) rootView.findViewById(R.id.crashPiggyButton);
 
         FloatingActionButton addMoneyToPiggy = (FloatingActionButton) rootView.findViewById(R.id.addMoneyToPiggy);
         sensorManager = (SensorManager) getContext().getSystemService(SENSOR_SERVICE);
-        piggy = new Piggy(piggyImageView, getContext());
 
+        piggy = new Piggy(piggyImageView, getContext());
 
         crashPiggyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utility.emptyPiggy();
-                onResume();
-                Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                sensorManager.registerListener(eventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+                if (piggyMoney != 0) {
+                    piggyIsEmptied = false;
+                    Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                    sensorManager.registerListener(eventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                } else {
+                    Toast.makeText(getContext(), "Your piggy is already empty", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
 
 
         addMoneyToPiggy.setOnClickListener(new View.OnClickListener() {
@@ -90,10 +94,13 @@ public class PiggyFragment extends Fragment {
         public void onSensorChanged(SensorEvent event) {
             if ((event.values[0] > 0 && event.values[0] < 5 || event.values[0] < 0 && event.values[0] > -5)
                     && (event.values[1] < -6 && event.values[1] > -10)) {
-                requiredMoneyView.setText("Flipped Portrait");
-            } else
-                requiredMoneyView.setText(String.valueOf(event.values[0]) + ":::" + String.valueOf(event.values[1]));
-
+                if (!piggyIsEmptied) {
+                    piggy.startGettingMoney();
+                    Utility.emptyPiggy();
+                    changePiggyValue();
+                    piggyIsEmptied = true;
+                }
+            }
         }
 
         @Override
@@ -109,13 +116,19 @@ public class PiggyFragment extends Fragment {
 
     }
 
+    public void changePiggyValue() {
+        piggyMoney = MainActivity.mSettings.getFloat(MainActivity.PIGGY_MONEY, 0);
+        piggyAmountView.setText(String.valueOf(piggyMoney));
+    }
+
     @Override
     public void onResume() {
         super.onResume();
 
         float requiredMoney = MainActivity.mSettings.getFloat(MainActivity.REQUIRED_MONEY, 0);
         float remainingMoney = MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, 0);
-        float piggyMoney = MainActivity.mSettings.getFloat(MainActivity.PIGGY_MONEY, 0);
+
+        piggyMoney = MainActivity.mSettings.getFloat(MainActivity.PIGGY_MONEY, 0);
 
         if (!piggyAmountView.getText().equals("")) {
             float piggyAmountValue = Float.parseFloat(piggyAmountView.getText().toString());
@@ -127,9 +140,7 @@ public class PiggyFragment extends Fragment {
             }
         }
 
-
-        piggyAmountView.setText(String.valueOf(piggyMoney));
-
+        changePiggyValue();
     }
 
 }

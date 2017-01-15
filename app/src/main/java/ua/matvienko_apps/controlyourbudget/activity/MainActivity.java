@@ -3,11 +3,10 @@ package ua.matvienko_apps.controlyourbudget.activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabSelectListener;
+import android.view.MenuItem;
 
 import ua.matvienko_apps.controlyourbudget.R;
 import ua.matvienko_apps.controlyourbudget.fragments.ExpenseFragment;
@@ -46,42 +45,37 @@ public class MainActivity extends AppCompatActivity {
 
         e.putBoolean("hasVisited", true);
 
-        BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+                findViewById(R.id.bottom_navigation);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new ExpenseFragment()).commit();
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onTabSelected(@IdRes int tabId) {
-                switch (tabId){
-                    case R.id.tab_expenses: {
-                        ExpenseFragment expenseFragment = new ExpenseFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, expenseFragment).commit();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_expense: {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new ExpenseFragment()).commit();
                         break;
                     }
-                    case R.id.tab_incomes: {
-                        IncomeFragment incomeFragment = new IncomeFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, incomeFragment).commit();
+                    case R.id.action_income: {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new IncomeFragment()).commit();
                         break;
                     }
-                    case R.id.tab_piggy: {
-                        PiggyFragment piggyFragment = new PiggyFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, piggyFragment).commit();
-//                        SearchFragment searchFragment = new SearchFragment();
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, searchFragment).commit();
+                    case R.id.action_piggy: {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new PiggyFragment()).commit();
                         break;
                     }
-                    case R.id.tab_statistics: {
-                        StatisticsFragment statisticsFragment = new StatisticsFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, statisticsFragment).commit();
+                    case R.id.action_settings: {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new StatisticsFragment()).commit();
                         break;
                     }
-//                    case R.id.tab_shopList: {
-//                        ShopListFragment shopListFragment = new ShopListFragment();
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, shopListFragment).commit();
-//                        break;
-//                    }
                 }
+
+                return true;
             }
         });
-
     }
 
 }

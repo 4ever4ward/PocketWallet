@@ -22,6 +22,10 @@
     <string name="remaining_in_cash">In cash:</string>
     
     <string name="total_spending_cost">Total:   %1$s</string>
+    <string name="tab_expense_name">Expense</string>
+    <string name="tab_income_name">Income</string>
+    <string name="tab_piggy_name">Piggy</string>
+    <string name="tab_statistics_name">Statistics</string>
 
     <string-array name="spinner_content">
         <item name="salary_group_name">Salary</item>

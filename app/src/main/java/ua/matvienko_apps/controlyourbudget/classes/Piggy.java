@@ -21,6 +21,7 @@ public class Piggy {
     private CustomAnimationDrawable piggyJoyAnimation;
     private CustomAnimationDrawable piggyCryAnimation;
     private CustomAnimationDrawable piggyAddMoneyAnimation;
+    private CustomAnimationDrawable piggyGetMoneyAnimation;
     private AnimationDrawable piggyBlinkingAnimation;
 
     public Piggy(ImageView piggyBackground, final Context context) {
@@ -30,46 +31,16 @@ public class Piggy {
         this.piggyBackground.setBackgroundResource(R.drawable.piggy_pattern);
 
 
-        new Thread() {
-            public void run() {
-                piggyJoyAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.piggy_joy_animation)) {
-                    @Override
-                    public void onAnimationFinish() {
-                        piggyJoyAnimation.stop();
-                        startBlinking();
-                    }
-                };
-                piggyCryAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.piggy_cry_animation)) {
-                    @Override
-                    public void onAnimationFinish() {
-                        piggyCryAnimation.stop();
-                        startBlinking();
-                    }
-                };
-                piggyAddMoneyAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.piggy_add_money_animation)) {
-                    @Override
-                    public void onAnimationFinish() {
-                        piggyAddMoneyAnimation.stop();
-                        startJoy();
-                    }
-                };
-            }
-        }.start();
-
-
         piggyBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPlayingAnimation())
                     startCry();
-
             }
         });
 
         piggyBackground.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (!isPlayingAnimation())
                     startJoy();
                 return true;
             }
@@ -79,7 +50,6 @@ public class Piggy {
 
     }
 
-
     public void startBlinking() {
         piggyBackground.setBackgroundResource(R.drawable.piggy_blinking_animation);
         piggyBlinkingAnimation = (AnimationDrawable) piggyBackground.getBackground();
@@ -87,38 +57,81 @@ public class Piggy {
     }
 
     public void startCry() {
-        piggyBackground.setBackground(piggyCryAnimation);
-        piggyBlinkingAnimation.stop();
-        piggyCryAnimation.start();
-    }
-
-    public void startJoy() {
-        piggyBackground.setBackground(piggyJoyAnimation);
-        piggyBlinkingAnimation.stop();
-        piggyJoyAnimation.start();
-
-        new Thread() {
-            public void run() {
-                MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.piggy_joy_sound);
-                if (mediaPlayer != null) {
-                    mediaPlayer.setVolume(0.4f, 0.4f);
-                    if (!mediaPlayer.isPlaying()) {
-                        mediaPlayer.start();
-                    }
+        if (!isPlayingAnimation()) {
+            piggyCryAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.piggy_cry_animation)) {
+                @Override
+                public void onAnimationFinish() {
+                    piggyCryAnimation.stop();
+                    piggyCryAnimation = null;
+                    startBlinking();
                 }
+            };
+            piggyBackground.setBackground(piggyCryAnimation);
+            piggyBlinkingAnimation.stop();
+            piggyCryAnimation.start();
+        }
+    }
+    public void startJoy() {
+        if (!isPlayingAnimation()) {
+            piggyJoyAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.piggy_joy_animation)) {
+                @Override
+                public void onAnimationFinish() {
+                    piggyJoyAnimation.stop();
+                    piggyJoyAnimation = null;
+                    startBlinking();
+                }
+            };
+            piggyBackground.setBackground(piggyJoyAnimation);
+            piggyBlinkingAnimation.stop();
+            piggyJoyAnimation.start();
 
-            }
-        }.start();
+            new Thread() {
+                public void run() {
+                    MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.piggy_joy_sound);
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(0.6f, 0.6f);
+                        if (!mediaPlayer.isPlaying()) {
+                            mediaPlayer.start();
+                        }
+                    }
+
+                }
+            }.start();
+        }
+    }
+    public void startAddingMoney() {
+        if (!isPlayingAnimation()) {
+            piggyAddMoneyAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.piggy_add_money_animation)) {
+                @Override
+                public void onAnimationFinish() {
+                    piggyAddMoneyAnimation.stop();
+                    piggyAddMoneyAnimation = null;
+                    startJoy();
+                }
+            };
+            piggyBackground.setBackground(piggyAddMoneyAnimation);
+            piggyBlinkingAnimation.stop();
+            piggyAddMoneyAnimation.start();
+        }
     }
 
-    public void startAddingMoney() {
-        piggyBackground.setBackground(piggyAddMoneyAnimation);
-        piggyBlinkingAnimation.stop();
-        piggyAddMoneyAnimation.start();
+    public void startGettingMoney() {
+        if (!isPlayingAnimation()) {
+            piggyGetMoneyAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.piggy_get_money_animation)) {
+                @Override
+                public void onAnimationFinish() {
+                    piggyGetMoneyAnimation.stop();
+                    piggyGetMoneyAnimation = null;
+                    startBlinking();
+                }
+            };
+            piggyBackground.setBackground(piggyGetMoneyAnimation);
+            piggyBlinkingAnimation.stop();
+            piggyGetMoneyAnimation.start();
+        }
     }
 
     public boolean isPlayingAnimation() {
-        return (piggyAddMoneyAnimation.isRunning() || piggyJoyAnimation.isRunning() || piggyCryAnimation.isRunning());
-
+        return piggyJoyAnimation != null || piggyCryAnimation != null || piggyAddMoneyAnimation != null || piggyGetMoneyAnimation != null;
     }
 }

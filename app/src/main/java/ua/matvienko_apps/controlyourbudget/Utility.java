@@ -97,7 +97,7 @@ public class Utility {
 
         series.setColor(context.getResources().getColor(R.color.colorAccent));
 
-
+        appDBHelper.close();
         return series;
     }
 
@@ -157,6 +157,8 @@ public class Utility {
 
         if (groupSum.isEmpty()) return null;
 
+        expenseDBHelper.close();
+        groupDBHelper.close();
         return groupSum;
     }
 
@@ -165,7 +167,7 @@ public class Utility {
                 null, DB_VERSION);
 
         List<ShopItem> shopList = appDBHelper.getAllCheckedShopItem(AppDBContract.ShopListEntry.TABLE_NAME);
-
+        appDBHelper.close();
         return shopList.size();
     }
 
@@ -182,6 +184,7 @@ public class Utility {
             allSpent += expenseList.get(i).getCost();
         }
 
+        appDBHelper.close();
         return allSpent;
     }
 
@@ -198,6 +201,7 @@ public class Utility {
             allAdded += incomeList.get(i).getCost();
         }
 
+        appDBHelper.close();
         return allAdded;
     }
 

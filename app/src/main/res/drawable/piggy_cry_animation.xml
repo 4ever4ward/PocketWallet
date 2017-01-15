@@ -15,14 +15,20 @@
         android:drawable="@drawable/piggy_sad_part_3"
         android:duration="300" />
     <item
+        android:drawable="@drawable/piggy_sad_part_2"
+        android:duration="300" />
+    <item
+        android:drawable="@drawable/piggy_sad_part_3"
+        android:duration="300" />
+    <item
         android:drawable="@drawable/piggy_sad_part_4"
-        android:duration="225" />
+        android:duration="250" />
     <item
         android:drawable="@drawable/piggy_sad_part_5"
-        android:duration="225" />
+        android:duration="250" />
     <item
         android:drawable="@drawable/piggy_sad_part_6"
-        android:duration="225" />
+        android:duration="250" />
     <item
         android:drawable="@drawable/piggy_sad_part_5"
         android:duration="225" />

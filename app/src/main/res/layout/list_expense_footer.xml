@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
-        android:text="Всего: "
+        android:textSize="12sp"
         android:layout_marginEnd="16dp" />
 
 

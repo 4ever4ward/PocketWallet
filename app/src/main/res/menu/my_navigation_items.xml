@@ -2,18 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_expense"
-        android:icon="@drawable/ic_expense_group_fastfood"
+        android:icon="@drawable/ic_expense"
         android:title="@string/tab_expense_name" />
     <item
         android:id="@+id/action_income"
-        android:icon="@android:drawable/ic_menu_compass"
+        android:icon="@drawable/ic_income"
         android:title="@string/tab_income_name" />
     <item
         android:id="@+id/action_piggy"
         android:icon="@drawable/ic_piggy"
         android:title="@string/tab_piggy_name" />
+    <!--<item-->
+    <!--android:id="@+id/action_search"-->
+    <!--android:icon="@android:drawable/ic_menu_search"-->
+    <!--android:title="@string/tab_search_name"/>-->
     <item
         android:id="@+id/action_settings"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@drawable/ic_statistics"
         android:title="@string/tab_statistics_name" />
 </menu>

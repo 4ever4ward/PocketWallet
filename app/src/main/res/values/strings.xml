@@ -26,6 +26,7 @@
     <string name="tab_income_name">Income</string>
     <string name="tab_piggy_name">Piggy</string>
     <string name="tab_statistics_name">Statistics</string>
+    <string name="tab_search_name">Search</string>
 
     <string-array name="spinner_content">
         <item name="salary_group_name">Salary</item>

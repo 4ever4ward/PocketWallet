@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new PiggyFragment()).commit();
                         break;
                     }
+//                    case R.id.action_search: {
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new SearchFragment()).commit();
+//                        break;
+//                    }
                     case R.id.action_settings: {
                         getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new StatisticsFragment()).commit();
                         break;

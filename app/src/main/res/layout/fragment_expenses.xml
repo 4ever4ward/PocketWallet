@@ -13,6 +13,7 @@
         android:orientation="horizontal">
 
         <FrameLayout
+            android:id="@+id/calendarView"
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:layout_margin="16dp"
@@ -48,8 +49,8 @@
             android:id="@+id/bookmarksLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layoutAnimation="@anim/layout_right_to_left_slide">
+            android:layoutAnimation="@anim/layout_right_to_left_slide"
+            android:orientation="vertical">
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -87,8 +88,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
-                android:background="@drawable/bookmark_red_long"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bookmark_red_long">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -110,7 +111,7 @@
                     android:layout_marginTop="8dp"
                     android:textColor="@color/colorBezh"
                     android:textSize="12sp" />
-                </FrameLayout>
+            </FrameLayout>
 
         </LinearLayout>
 
@@ -144,6 +145,7 @@
             android:layout_marginTop="10dp"
             android:focusableInTouchMode="false"
             android:isScrollContainer="false"
+            android:layoutAnimation="@anim/layout_top_to_bottom"
             android:listSelector="@android:color/transparent" />
 
 
@@ -152,6 +154,7 @@
             android:layout_height="20dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/list_expense_header" />
+
     </FrameLayout>
 
 

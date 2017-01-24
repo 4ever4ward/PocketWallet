@@ -69,6 +69,20 @@ public class Piggy {
             piggyBackground.setBackground(piggyCryAnimation);
             piggyBlinkingAnimation.stop();
             piggyCryAnimation.start();
+
+            new Thread() {
+                public void run() {
+                    MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.piggy_cry_sound);
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(0.3f, 0.3f);
+                        if (!mediaPlayer.isPlaying()) {
+                            mediaPlayer.start();
+                        }
+                    }
+
+                }
+            }.start();
+
         }
     }
     public void startJoy() {
@@ -112,9 +126,20 @@ public class Piggy {
             piggyBackground.setBackground(piggyAddMoneyAnimation);
             piggyBlinkingAnimation.stop();
             piggyAddMoneyAnimation.start();
+
+            new Thread() {
+                public void run() {
+                    MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.adding_money_sound);
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(0.6f, 0.6f);
+                        if (!mediaPlayer.isPlaying()) {
+                            mediaPlayer.start();
+                        }
+                    }
+                }
+            }.start();
         }
     }
-
     public void startGettingMoney() {
         if (!isPlayingAnimation()) {
             piggyGetMoneyAnimation = new CustomAnimationDrawable((AnimationDrawable) ContextCompat.getDrawable(context, R.drawable.piggy_get_money_animation)) {
@@ -128,6 +153,18 @@ public class Piggy {
             piggyBackground.setBackground(piggyGetMoneyAnimation);
             piggyBlinkingAnimation.stop();
             piggyGetMoneyAnimation.start();
+
+            new Thread() {
+                public void run() {
+                    MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.getting_money_sound);
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(0.6f, 0.6f);
+                        if (!mediaPlayer.isPlaying()) {
+                            mediaPlayer.start();
+                        }
+                    }
+                }
+            }.start();
         }
     }
 

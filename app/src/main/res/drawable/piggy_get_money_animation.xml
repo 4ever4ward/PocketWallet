@@ -3,24 +3,20 @@
     android:oneshot="true">
 
     <item
-        android:drawable="@drawable/piggy_pattern"
-        android:duration="200" />
-
-    <item
         android:drawable="@drawable/piggy_get_money_part_1"
-        android:duration="125" />
+        android:duration="135" />
 
     <item
         android:drawable="@drawable/piggy_get_money_part_2"
-        android:duration="125" />
+        android:duration="135" />
 
     <item
         android:drawable="@drawable/piggy_get_money_part_3"
-        android:duration="125" />
+        android:duration="135" />
 
     <item
         android:drawable="@drawable/piggy_get_money_part_4"
-        android:duration="125" />
+        android:duration="135" />
 
     <item
         android:drawable="@drawable/piggy_get_money_part_5"
@@ -28,11 +24,81 @@
 
     <item
         android:drawable="@drawable/piggy_get_money_part_6"
-        android:duration="125" />
+        android:duration="115" />
 
     <item
         android:drawable="@drawable/piggy_get_money_part_7"
-        android:duration="125" />
+        android:duration="110" />
+    <item
+        android:drawable="@drawable/piggy_get_money_part_1"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_2"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_3"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_4"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_5"
+        android:duration="90" />
+
+    <!--<item-->
+    <!--android:drawable="@drawable/piggy_get_money_part_6"-->
+    <!--android:duration="80" />-->
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_7"
+        android:duration="90" />
+    <item
+        android:drawable="@drawable/piggy_get_money_part_1"
+        android:duration="90" />
+    <item
+        android:drawable="@drawable/piggy_get_money_part_2"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_3"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_4"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_5"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_2"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_3"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_4"
+        android:duration="90" />
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_5"
+        android:duration="90" />
+
+    <!--<item-->
+    <!--android:drawable="@drawable/piggy_get_money_part_6"-->
+    <!--android:duration="90" />-->
+
+    <item
+        android:drawable="@drawable/piggy_get_money_part_7"
+        android:duration="90" />
+
 
     <item
         android:drawable="@drawable/piggy_get_money_part_8"

@@ -1,6 +1,7 @@
 package ua.matvienko_apps.controlyourbudget.fragments;
 
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,13 +45,15 @@ public class ExpenseFragment extends Fragment {
     public static final int COL_EXPENSE_NAME = 3;
     public static final int COL_EXPENSE_COST = 4;
 
+    public static DateTime date = null;
 
     View rootView;
     View listviewHeader;
     View listviewFooter;
 
-    DateTime currentDayStart;
-    DateTime currentDayEnd;
+    TextView dayOfMonth;
+    TextView monthName;
+
     LinearLayout bookmarksLayout;
     DateTime now;
     LayoutInflater inflater;
@@ -68,13 +72,9 @@ public class ExpenseFragment extends Fragment {
         listviewHeader = inflater.inflate(R.layout.list_expense_header, null);
         listviewFooter = inflater.inflate(R.layout.list_expense_footer, null);
 
+        date = null;
+
         bookmarksLayout = (LinearLayout) rootView.findViewById(R.id.bookmarksLayout);
-
-        now = new DateTime();
-        currentDayStart = now.minusHours(now.getHourOfDay());
-
-        currentDayEnd = currentDayStart.plusHours(24);
-
 
     }
 
@@ -82,16 +82,36 @@ public class ExpenseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
         final FloatingActionButton addElementButton = (FloatingActionButton) rootView.findViewById(R.id.addElementButton);
-        TextView dayOfMonth = (TextView) rootView.findViewById(R.id.date_textView);
-        TextView monthName = (TextView) rootView.findViewById(R.id.month_textView);
+
+        dayOfMonth = (TextView) rootView.findViewById(R.id.date_textView);
+        monthName = (TextView) rootView.findViewById(R.id.month_textView);
+
         expenseListView = (ListView) rootView.findViewById(R.id.expenseListView);
+
         rCashMoneyTextView = (TextView) rootView.findViewById(R.id.rCashMoneyTextView);
         rCardMoneyTextView = (TextView) rootView.findViewById(R.id.rCardMoneyTextView);
+
         footerText = (TextView) listviewFooter.findViewById(R.id.cashMemoSum);
 
-        dayOfMonth.setText(Integer.toString(now.getDayOfMonth()));
-        monthName.setText(now.monthOfYear().getAsShortText());
-        rCashMoneyTextView.setText("Осталось: " + Float.toString(MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, -5)));
+        FrameLayout calendarView = (FrameLayout) rootView.findViewById(R.id.calendarView);
+
+
+        calendarView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
+                        month++;
+                        date = new DateTime(year, month, dayOfMonth, 0, 0);
+                        onResume();
+                    }
+                }, new DateTime().getYear(), new DateTime().getMonthOfYear() - 1, new DateTime().getDayOfMonth());
+
+                datePickerDialog.show();
+
+            }
+        });
 
 
         expenseListView.setVerticalScrollBarEnabled(false);
@@ -121,8 +141,6 @@ public class ExpenseFragment extends Fragment {
         expensesDbHelper = new AppDBHelper(getContext(),
                 AppDBContract.ExpensesEntry.TABLE_NAME, null, 1);
 
-//        update();
-
 
         addElementButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,13 +155,33 @@ public class ExpenseFragment extends Fragment {
         return rootView;
     }
 
+
     private void update() {
+
+        if (date == null) {
+            now = new DateTime();
+        } else {
+            now = date;
+        }
+
+        dayOfMonth.setText(Integer.toString(now.getDayOfMonth()));
+        monthName.setText(now.monthOfYear().getAsShortText());
+
+
+        DateTime dayStart =
+                now
+                        .minusHours(now.getHourOfDay())
+                        .minusMinutes(now.getMinuteOfHour())
+                        .minusSeconds(now.getSecondOfMinute());
+
+
+        DateTime dayEnd = dayStart.plusHours(24);
 
         // All cursor expense, that added at this day
         Cursor dayCursorForExpenseTable = expensesDbHelper
                 .getAllCursor(
-                        currentDayStart.getMillis(),
-                        currentDayEnd.getMillis(),
+                        dayStart.getMillis(),
+                        dayEnd.getMillis(),
                         AppDBContract.ExpensesEntry.TABLE_NAME
                 );
 
@@ -163,8 +201,8 @@ public class ExpenseFragment extends Fragment {
         double totalSum = Utility.cashMemoSum(expensesDbHelper.getAllExpenseAsList(
                 AppDBContract.ExpensesEntry.TABLE_NAME,
                 AppDBContract.ExpensesEntry.COLUMN_EXPENSE_DATE,
-                Long.toString(currentDayStart.getMillis()),
-                Long.toString(currentDayEnd.getMillis())
+                Long.toString(dayStart.getMillis()),
+                Long.toString(dayEnd.getMillis())
         ));
 
 
@@ -172,10 +210,11 @@ public class ExpenseFragment extends Fragment {
 
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
+
+        expenseListView.startLayoutAnimation();
         bookmarksLayout.startLayoutAnimation();
         update();
     }

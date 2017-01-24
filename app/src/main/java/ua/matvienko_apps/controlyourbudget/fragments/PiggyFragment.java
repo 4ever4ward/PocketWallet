@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ public class PiggyFragment extends Fragment {
     private SensorManager sensorManager;
     private Piggy piggy;
     private float piggyMoney;
+    ImageView crashPiggyButton;
 
     private boolean piggyIsEmptied;
 
@@ -49,7 +51,7 @@ public class PiggyFragment extends Fragment {
 
         piggyAmountView = (TextView) rootView.findViewById(R.id.piggyAmountView);
         ImageView piggyImageView = (ImageView) rootView.findViewById(R.id.piggyImage);
-        ImageView crashPiggyButton = (ImageView) rootView.findViewById(R.id.crashPiggyButton);
+        crashPiggyButton = (ImageView) rootView.findViewById(R.id.crashPiggyButton);
 
         FloatingActionButton addMoneyToPiggy = (FloatingActionButton) rootView.findViewById(R.id.addMoneyToPiggy);
         sensorManager = (SensorManager) getContext().getSystemService(SENSOR_SERVICE);
@@ -129,6 +131,11 @@ public class PiggyFragment extends Fragment {
         float remainingMoney = MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, 0);
 
         piggyMoney = MainActivity.mSettings.getFloat(MainActivity.PIGGY_MONEY, 0);
+        TranslateAnimation animation = new TranslateAnimation(-200, 0, 0, 0);
+        animation.setDuration(600);
+        crashPiggyButton.startAnimation(animation);
+//        crashPiggyButton.startAnimation(new TranslateAnimation(-500, 0, 0,0));
+
 
         if (!piggyAmountView.getText().equals("")) {
             float piggyAmountValue = Float.parseFloat(piggyAmountView.getText().toString());

@@ -4,10 +4,11 @@
 
     <item
         android:drawable="@drawable/piggy_pattern"
-        android:duration="200" />
+        android:duration="150" />
+
     <item
         android:drawable="@drawable/piggy_sad_part_1"
-        android:duration="300" />
+        android:duration="150" />
     <item
         android:drawable="@drawable/piggy_sad_part_2"
         android:duration="300" />
@@ -42,8 +43,15 @@
         android:drawable="@drawable/piggy_sad_part_2"
         android:duration="300" />
     <item
+        android:drawable="@drawable/piggy_sad_part_3"
+        android:duration="300" />
+    <item
+        android:drawable="@drawable/piggy_sad_part_2"
+        android:duration="300" />
+    <item
         android:drawable="@drawable/piggy_sad_part_1"
         android:duration="300" />
+
     <item
         android:drawable="@drawable/piggy_pattern"
         android:duration="200" />

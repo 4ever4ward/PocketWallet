@@ -39,7 +39,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 + AppDBContract.ExpensesEntry.COLUMN_EXPENSE_DATE + " INTEGER NOT NULL, "
                 + AppDBContract.ExpensesEntry.COLUMN_EXPENSE_GROUP + " TEXT NOT NULL, "
                 + AppDBContract.ExpensesEntry.COLUMN_EXPENSE_NAME + " TEXT NOT NULL, "
-                + AppDBContract.ExpensesEntry.COLUMN_EXPENSE_COST + " DOUBLE NOT NULL " + " );";
+                + AppDBContract.ExpensesEntry.COLUMN_EXPENSE_COST + " DOUBLE NOT NULL, "
+                + AppDBContract.ExpensesEntry.COLUMN_EXPENSE_REPEAT + " INTEGER NOT NULL " + " );";
         // Create table with six columns for incomes
         String createIncomesTable = "CREATE TABLE "
                 + AppDBContract.IncomeEntry.TABLE_NAME + " ("
@@ -77,10 +78,11 @@ public class AppDBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         // Expense data, which we insert to database
-        contentValues.put(COLUMN_EXPENSE_DATE, expense.getDate());
+        contentValues.put(AppDBContract.ExpensesEntry.COLUMN_EXPENSE_DATE, expense.getDate());
         contentValues.put(AppDBContract.ExpensesEntry.COLUMN_EXPENSE_GROUP, expense.getGroup());
         contentValues.put(AppDBContract.ExpensesEntry.COLUMN_EXPENSE_NAME, expense.getName());
         contentValues.put(AppDBContract.ExpensesEntry.COLUMN_EXPENSE_COST, expense.getCost());
+        contentValues.put(AppDBContract.ExpensesEntry.COLUMN_EXPENSE_REPEAT, expense.getRepeat());
 
         //Insert expense data to our database
         db.insert(AppDBContract.ExpensesEntry.TABLE_NAME, null, contentValues);
@@ -143,39 +145,13 @@ public class AppDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Expense> getAllExpenseAsList(String tableName) {
-        List<Expense> expenseList = new ArrayList<Expense>();
-
-        String query = "SELECT * FROM "
-                + tableName
-                +" ORDER BY "
-                + " date" +" ASC";
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                Expense expense = new Expense(Long.parseLong(cursor.getString(1)),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        Double.parseDouble(cursor.getString(4)));
-
-                expenseList.add(expense);
-            } while (cursor.moveToNext());
-        }
-
-        db.close();
-        return expenseList;
-    }
-
-    public List<Group> getAllGroupAsList(String tableName) {
+    public List<Group> getAllGroupAsList() {
         List<Group> groupList = new ArrayList<Group>();
 
         String query = "SELECT * FROM "
-                + tableName
+                + AppDBContract.GroupsEntry.TABLE_NAME
                 +" ORDER BY "
-                + " _id" +" DESC";
+                + " _id" + " DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -190,17 +166,18 @@ public class AppDBHelper extends SQLiteOpenHelper {
         }
 
         db.close();
+        cursor.close();
         return groupList;
 
     }
 
-    public List<Income> getAllIncomeAsList(String tableName) {
+    public List<Income> getAllIncomeAsList() {
         List<Income> incomesList = new ArrayList<Income>();
 
         String query = "SELECT * FROM "
-                + tableName
+                + AppDBContract.IncomeEntry.TABLE_NAME
                 +" ORDER BY "
-                + " date" +" ASC";
+                + " date" + " ASC";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -217,14 +194,70 @@ public class AppDBHelper extends SQLiteOpenHelper {
         }
 
         db.close();
+        cursor.close();
         return incomesList;
     }
 
+    public List<Expense> getAllExpenseAsList() {
+        List<Expense> expenseList = new ArrayList<Expense>();
 
-    public List<Expense> getAllExpenseAsList(String tableName, String columnName, String from, String to) {
+        String query = "SELECT * FROM "
+                + AppDBContract.ExpensesEntry.TABLE_NAME
+                +" ORDER BY "
+                + " date" +" ASC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Expense expense = new Expense(Long.parseLong(cursor.getString(1)),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        Double.parseDouble(cursor.getString(4)), 0);
+
+                expenseList.add(expense);
+            } while (cursor.moveToNext());
+        }
+
+        db.close();
+        cursor.close();
+        return expenseList;
+    }
+
+    public List<Expense> getAllExpenseAsList(String columnName, String value) {
         List<Expense> expenseIncomeList = new ArrayList<Expense>();
 
-        String query = "SELECT * FROM " + tableName
+        String query = "SELECT * FROM " + AppDBContract.ExpensesEntry.TABLE_NAME
+                + " WHERE "
+                + columnName + " = " + value
+                + " ORDER BY "
+                + COLUMN_EXPENSE_DATE + " ASC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Expense expenseIncome = new Expense(Long.parseLong(cursor.getString(1)),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        Double.parseDouble(cursor.getString(4)),
+                        Integer.parseInt(cursor.getString(5)));
+
+                expenseIncomeList.add(expenseIncome);
+            } while (cursor.moveToNext());
+        }
+
+        db.close();
+        cursor.close();
+        return expenseIncomeList;
+    }
+
+    public List<Expense> getAllExpenseAsList(String columnName, String from, String to) {
+        List<Expense> expenseIncomeList = new ArrayList<Expense>();
+
+        String query = "SELECT * FROM " + AppDBContract.ExpensesEntry.TABLE_NAME
                 + " WHERE "
                 + columnName + " >= " + from + " AND "
                 + columnName + " <= " + to
@@ -239,23 +272,26 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 Expense expenseIncome = new Expense(Long.parseLong(cursor.getString(1)),
                         cursor.getString(2),
                         cursor.getString(3),
-                        Double.parseDouble(cursor.getString(4)));
+                        Double.parseDouble(cursor.getString(4)),
+                        Integer.parseInt(cursor.getString(5)));
 
                 expenseIncomeList.add(expenseIncome);
             } while (cursor.moveToNext());
         }
 
+        db.close();
+        cursor.close();
         return expenseIncomeList;
     }
 
-    public ArrayList<String> getAllUsedGroup(String tableName) {
+    public ArrayList<String> getAllUsedGroup() {
         ArrayList<String> usedGroupName = new ArrayList<String>();
 
         String groupName;
         int i = 0;
 
         String query = "SELECT * FROM "
-                + tableName
+                + AppDBContract.GroupsEntry.TABLE_NAME
                 +" ORDER BY "
                 + AppDBContract.ShopListEntry.COLUMN_SHOPLIST_GROUP + " ASC";
 
@@ -274,15 +310,16 @@ public class AppDBHelper extends SQLiteOpenHelper {
         }
 
         db.close();
+        cursor.close();
         return usedGroupName;
     }
 
 
-    public List<ShopItem> getAllShopItemAsList(String tableName) {
+    public List<ShopItem> getAllShopItemAsList() {
         List<ShopItem> shopItems = new ArrayList<ShopItem>();
 
         String query = "SELECT * FROM "
-                + tableName
+                + AppDBContract.ShopListEntry.TABLE_NAME
                 +" ORDER BY "
                 + " date" +" ASC";
 
@@ -301,14 +338,16 @@ public class AppDBHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
+        db.close();
+        cursor.close();
         return shopItems;
     }
 
-    public List<ShopItem> getAllCheckedShopItem(String tableName) {
+    public List<ShopItem> getAllCheckedShopItem() {
         List<ShopItem> shopItems = new ArrayList<ShopItem>();
 
         String query = "SELECT * FROM "
-                + tableName
+                + AppDBContract.ShopListEntry.TABLE_NAME
                 + " WHERE "
                 + AppDBContract.ShopListEntry.COLUMN_SHOPLIST_CHECKED + " = 1 "
                 + " ORDER BY "
@@ -329,6 +368,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
+        db.close();
+        cursor.close();
         return shopItems;
     }
 
@@ -403,7 +444,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(tableName, AppDBContract.IncomeEntry.COLUMN_INCOME_ID + " = " + id, null);
     }
-
 
     public int getGroupsCount(String groupType) {
         SQLiteDatabase db = this.getReadableDatabase();

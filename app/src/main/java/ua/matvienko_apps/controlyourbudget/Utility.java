@@ -58,7 +58,7 @@ public class Utility {
         DateTime secondExpDate;
         float daySum = 0.0f;
 
-        List<Income> incomeList = appDBHelper.getAllIncomeAsList(tableName);
+        List<Income> incomeList = appDBHelper.getAllIncomeAsList();
         incomeList.add(new Income(0,"","",0.0));
 
         series.addPoint(new ValueLinePoint("", 0f));
@@ -166,7 +166,7 @@ public class Utility {
         AppDBHelper appDBHelper = new AppDBHelper(context, AppDBContract.ShopListEntry.TABLE_NAME,
                 null, DB_VERSION);
 
-        List<ShopItem> shopList = appDBHelper.getAllCheckedShopItem(AppDBContract.ShopListEntry.TABLE_NAME);
+        List<ShopItem> shopList = appDBHelper.getAllCheckedShopItem();
         appDBHelper.close();
         return shopList.size();
     }
@@ -178,7 +178,7 @@ public class Utility {
                 null,
                 AppDBHelper.DB_VERSION);
 
-        List<Expense> expenseList= appDBHelper.getAllExpenseAsList(AppDBContract.ExpensesEntry.TABLE_NAME);
+        List<Expense> expenseList = appDBHelper.getAllExpenseAsList();
 
         for (int i = 0; i < expenseList.size(); i++) {
             allSpent += expenseList.get(i).getCost();
@@ -195,7 +195,7 @@ public class Utility {
                 null,
                 AppDBHelper.DB_VERSION);
 
-        List<Income> incomeList = appDBHelper.getAllIncomeAsList(AppDBContract.IncomeEntry.TABLE_NAME);
+        List<Income> incomeList = appDBHelper.getAllIncomeAsList();
 
         for (int i = 0; i < incomeList.size(); i++) {
             allAdded += incomeList.get(i).getCost();
@@ -238,6 +238,8 @@ public class Utility {
             return R.drawable.ic_expense_group_eat;
         } else if (groupName.equals(context.getString(R.string.new_group_name))) {
             return R.drawable.ic_add_white;
+        } else if (groupName.equals(context.getString(R.string.fruits_group_name))) {
+            return R.drawable.ic_expense_group_fruits;
         }
         return -1;
     }

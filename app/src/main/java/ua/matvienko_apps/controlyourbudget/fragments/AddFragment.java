@@ -6,14 +6,18 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +55,17 @@ public class AddFragment extends Fragment {
     private SharedPreferences.Editor editor;
 
     private int ADD_TYPE;
+    private int REPEAT_TYPE;
+
+    private SwitchCompat repeatSwitch;
+    private Spinner repeatTypeSpinner;
+
+
+    public static int REPEAT_DAILY = 0;
+    public static int REPEAT_WEEKLY = 1;
+    public static int REPEAT_MONTHLY = 2;
+    public static int REPEAT_ANNUALLY = 3;
+
 
 
     @Override
@@ -62,6 +77,40 @@ public class AddFragment extends Fragment {
         itemNameView = (EditText) rootView.findViewById(R.id.addExpenseName);
         itemCostView = (EditText) rootView.findViewById(R.id.addExpenseCost);
         groupGridView = (GridView) rootView.findViewById(R.id.groupGridView);
+        repeatSwitch = (SwitchCompat) rootView.findViewById(R.id.repeat_switch);
+        repeatTypeSpinner = (Spinner) rootView.findViewById(R.id.repeat_type_spinner);
+
+        repeatTypeSpinner.setEnabled(false);
+        repeatTypeSpinner.setPressed(false);
+
+        repeatTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                REPEAT_TYPE = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        repeatSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    repeatSwitch.setTextColor(getResources().getColor(R.color.colorAccent));
+                    repeatTypeSpinner.setEnabled(true);
+
+                } else {
+                    repeatSwitch.setTextColor(getResources().getColor(R.color.colorDarkerGray));
+                    repeatTypeSpinner.setEnabled(false);
+//                    REPEAT_TYPE = -1;
+                }
+
+            }
+        });
 
         groupGridView.setNumColumns(3);
 
@@ -105,25 +154,8 @@ public class AddFragment extends Fragment {
         //next he can change it
         cashImageView.callOnClick();
 
-
-        // Init standard groups
-        expenseGroup = getString(R.string.expense_group_type);
-        if (!appDBHelper.getAllGroupCursor(expenseGroup).moveToFirst()) {
-
-            appDBHelper.addGroup(new Group(getString(R.string.new_group_name), expenseGroup));
-            appDBHelper.addGroup(new Group(getString(R.string.eat_group_name), expenseGroup, Utility.HIGH_PRIORITY));
-            appDBHelper.addGroup(new Group(getString(R.string.fastfood_group_name), expenseGroup, Utility.LOW_PRIORITY));
-            appDBHelper.addGroup(new Group(getString(R.string.drinks_group_name), expenseGroup, Utility.LOW_PRIORITY));
-        }
-
-        incomeGroup = getString(R.string.income_group_type);
-        if (!appDBHelper.getAllGroupCursor(incomeGroup).moveToFirst()) {
-
-            appDBHelper.addGroup(new Group(getString(R.string.new_group_name), incomeGroup));
-            appDBHelper.addGroup(new Group(getString(R.string.salary_group_name), incomeGroup));
-            appDBHelper.addGroup(new Group(getString(R.string.bank_group_name), incomeGroup));
-            appDBHelper.addGroup(new Group(getString(R.string.other_group_name), incomeGroup));
-        }
+        // Init start groups
+        initStartGroups();
 
 
         final String fragmentName = getActivity().getIntent().getStringExtra("FragmentName");
@@ -176,11 +208,16 @@ public class AddFragment extends Fragment {
                 float rMoney = getRemainingMoneyBy(addType);
                 double cost = Double.parseDouble(itemCostView.getText().toString());
 
+                if (!repeatSwitch.isChecked())
+                    REPEAT_TYPE = -1;
+
+                Log.e("TAG", REPEAT_TYPE + "");
+
                 if (rMoney > (float) cost) {
                     addExpense(addType,
                             name,
                             type,
-                            cost);
+                            cost, REPEAT_TYPE);
                     getActivity().finish();
                 } else {
                     Toast.makeText(getContext(), "not enough money", Toast.LENGTH_SHORT).show();
@@ -219,7 +256,7 @@ public class AddFragment extends Fragment {
 
     }
 
-    public void addExpense(int addType, String name, String type, double cost) {
+    public void addExpense(int addType, String name, String type, double cost, int repeat) {
         if (addType == CASH) {
             float reMoney = MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, 0);
             float newReMoney = reMoney - (float) cost;
@@ -238,9 +275,10 @@ public class AddFragment extends Fragment {
         Expense expense = new Expense(mDateTimeNow.getMillis(),
                 type,
                 name,
-                cost);
+                cost, REPEAT_TYPE);
         appDBHelper.addExpense(expense);
     }
+
     public void addIncome(int addType, String name, String type, double cost) {
         if (addType == CASH) {
             float reMoney = MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, 0);
@@ -265,6 +303,7 @@ public class AddFragment extends Fragment {
 
 
     }
+
     public void addShopItem(String name, String type, double cost) {
         mDateTimeNow = new DateTime();
         ShopItem shopItem = new ShopItem(mDateTimeNow.getMillis(),
@@ -273,6 +312,30 @@ public class AddFragment extends Fragment {
                 cost,
                 0);
         appDBHelper.addShopListItem(shopItem);
+    }
+
+    public void initStartGroups() {
+
+        // Init standard groups
+        expenseGroup = getString(R.string.expense_group_type);
+        if (!appDBHelper.getAllGroupCursor(expenseGroup).moveToFirst()) {
+
+            appDBHelper.addGroup(new Group(getString(R.string.new_group_name), expenseGroup));
+            appDBHelper.addGroup(new Group(getString(R.string.eat_group_name), expenseGroup, Utility.HIGH_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.fastfood_group_name), expenseGroup, Utility.LOW_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.drinks_group_name), expenseGroup, Utility.LOW_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.fruits_group_name), expenseGroup, Utility.NORMAL_PRIORITY));
+        }
+
+        incomeGroup = getString(R.string.income_group_type);
+        if (!appDBHelper.getAllGroupCursor(incomeGroup).moveToFirst()) {
+
+            appDBHelper.addGroup(new Group(getString(R.string.new_group_name), incomeGroup));
+            appDBHelper.addGroup(new Group(getString(R.string.salary_group_name), incomeGroup));
+            appDBHelper.addGroup(new Group(getString(R.string.bank_group_name), incomeGroup));
+            appDBHelper.addGroup(new Group(getString(R.string.other_group_name), incomeGroup));
+        }
+
     }
 
     @Override

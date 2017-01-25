@@ -5,9 +5,12 @@
     <string name="expense_group_type">expense</string>
 
     <string name="eat_group_name">Eat</string>
-    <string name="fastfood_group_name">Fastfood</string>
+    <string name="fastfood_group_name">Fast food</string>
     <string name="drinks_group_name">Drinks</string>
     <string name="utilityBills_group_name">Utility Bills</string>
+    <string name="fruits_group_name">Fruits</string>
+
+    <string name="currency">USD</string>
 
     <string name="new_group_name">New</string>
 
@@ -18,20 +21,29 @@
     <string name="bank_group_name">Bank</string>
     <string name="other_group_name">Other</string>
 
+    <!--Type of money's-->
     <string name="remaining_on_card">On card:</string>
     <string name="remaining_in_cash">In cash:</string>
     
     <string name="total_spending_cost">Total:   %1$s</string>
+
+    <!--String's for bottom bar tab's-->
     <string name="tab_expense_name">Expense</string>
     <string name="tab_income_name">Income</string>
     <string name="tab_piggy_name">Piggy</string>
     <string name="tab_statistics_name">Statistics</string>
     <string name="tab_search_name">Search</string>
 
+
+    <string name="description">Description</string>
+    <string name="repeat_string">Repeat</string>
+
+    <!--Spinner content for repeating expenses-->
     <string-array name="spinner_content">
-        <item name="salary_group_name">Salary</item>
-        <item name="bank_group_name">Bank</item>
-        <item name="other_group_name">Other</item>
+        <item name="daily">Daily</item>
+        <item name="weekly">Weekly</item>
+        <item name="monthly">Monthly</item>
+        <item name="annually">Annually</item>
     </string-array>
 
 </resources>

@@ -19,7 +19,6 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ua.matvienko_apps.controlyourbudget.R;
@@ -115,7 +114,7 @@ public class ShopListFragment extends Fragment {
         endShoppingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkedItemsList = appDBHelper.getAllCheckedShopItem(AppDBContract.ShopListEntry.TABLE_NAME);
+                checkedItemsList = appDBHelper.getAllCheckedShopItem();
 
                 float checkedItemsSum = 0;
                 for (int i = 0; i < checkedItemsList.size(); i++) {
@@ -144,7 +143,8 @@ public class ShopListFragment extends Fragment {
                                     if (itemsSum <= rMoney ) {
                                         // Move all of checked items to expense table
                                         moveCheckedItems();
-                                    } else Toast.makeText(getActivity(), "Not enough remaining money. You cannot buy all of this items", Toast.LENGTH_SHORT).show();;
+                                    } else
+                                        Toast.makeText(getActivity(), "Not enough remaining money. You cannot buy all of this items", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -165,10 +165,8 @@ public class ShopListFragment extends Fragment {
 
     public void updateListFromDB() {
 
-        ArrayList<String> arrayList = appDBHelper.getAllUsedGroup(AppDBContract.ShopListEntry.TABLE_NAME);
-
         GroupShopListAdapter listCursorAdapter = new GroupShopListAdapter(getContext(),
-                appDBHelper.getAllUsedGroup(AppDBContract.ShopListEntry.TABLE_NAME));
+                appDBHelper.getAllUsedGroup());
 
         shopListView.setAdapter(listCursorAdapter);
     }
@@ -192,7 +190,7 @@ public class ShopListFragment extends Fragment {
         // Add all checked items to expenseList
         for (int pos = 0; pos < checkedItemsList.size(); pos++) {
             appDBHelper.addExpense(new Expense(checkedItemsList.get(pos).getDate(), checkedItemsList.get(pos).getGroup(),
-                    checkedItemsList.get(pos).getName(), checkedItemsList.get(pos).getCost()));
+                    checkedItemsList.get(pos).getName(), checkedItemsList.get(pos).getCost(), 0));
 
             // Change value of CASH_REMAINING_MONEY
             Float rMoney = MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, 0)

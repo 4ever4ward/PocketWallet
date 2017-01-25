@@ -66,7 +66,7 @@ public class ExpenseCursorAdapter extends CursorAdapter {
         viewHolder.itemName.setText(name);
 
         float cost = cursor.getFloat(COL_EXPENSE_COST);
-        viewHolder.itemCost.setText(Utility.formatMoney(cost));
+        viewHolder.itemCost.setText(Utility.formatMoney(cost) + " " + context.getString(R.string.currency));
 
         try {
             viewHolder.itemImage.setImageResource(Utility.getIconIdByGroupName(group, context));

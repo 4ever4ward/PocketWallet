@@ -14,6 +14,7 @@ public class AppDBContract {
         public static final String COLUMN_EXPENSE_GROUP = "type";
         public static final String COLUMN_EXPENSE_NAME = "name";
         public static final String COLUMN_EXPENSE_COST = "cost";
+        public static final String COLUMN_EXPENSE_REPEAT = "repeat";
     }
     public static final class IncomeEntry implements BaseColumns {
 
@@ -48,4 +49,5 @@ public class AppDBContract {
         public static final String COLUMN_SHOPLIST_COST = "cost";
         public static final String COLUMN_SHOPLIST_CHECKED = "checked";
     }
+
 }

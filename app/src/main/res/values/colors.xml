@@ -6,10 +6,12 @@
 
     <color name="holeColor">#007db77f</color>
     <color name="colorBezh">#fffddd</color>
-    <color name="colorRed">#f82727</color>
-    <color name="colorGreen">#25dc3e</color>
+    <color name="colorRed">#dc3939</color>
+    <color name="colorGreen">#53c262</color>
     <color name="colorCyan">#00bff3</color>
     <color name="colorMaterialRed">#e64a19</color>
+
+    <color name="colorDarkerGray">@android:color/darker_gray</color>
 
     <color name="colorGreenSelected">#d266e9a9</color>
 </resources>

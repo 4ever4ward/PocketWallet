@@ -8,7 +8,13 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import java.util.List;
+
 import ua.matvienko_apps.controlyourbudget.R;
+import ua.matvienko_apps.controlyourbudget.classes.Expense;
+import ua.matvienko_apps.controlyourbudget.data.AppDBContract;
+import ua.matvienko_apps.controlyourbudget.data.AppDBHelper;
+import ua.matvienko_apps.controlyourbudget.fragments.AddFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.ExpenseFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.IncomeFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.PiggyFragment;
@@ -23,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String CARD_REMAINING_MONEY = "CardRemainingMoney";
     public static final String PIGGY_MONEY = "PiggyMoney";
     public static final String REQUIRED_MONEY = "RequiredMoney";
+
+    public static final String CURRENCY = "Currency";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             e.putFloat(CASH_REMAINING_MONEY, 0);
             e.putFloat(CARD_REMAINING_MONEY, 0);
             e.putFloat(PIGGY_MONEY, 0);
+            e.putString(CURRENCY, getString(R.string.currency));
             e.putBoolean("hasVisited", true);
             e.apply();
         }
@@ -80,6 +89,14 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void startService() {
+        AppDBHelper dbHelper = new AppDBHelper(getApplicationContext(), AppDBContract.DB_NAME, null, AppDBHelper.DB_VERSION);
+        List<Expense> repeatedExpensesList = dbHelper.getAllExpenseAsList(AppDBContract.ExpensesEntry.COLUMN_EXPENSE_REPEAT,
+                Integer.toString(AddFragment.REPEAT_DAILY),
+                Integer.toString(AddFragment.REPEAT_ANNUALLY));
+
     }
 
 }

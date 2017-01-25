@@ -88,7 +88,7 @@ public class StatisticsFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 groupNameText.setText(((PieEntry) e).getLabel());
-                groupCostText.setText(Utility.formatMoney(((PieEntry) e).getValue()));
+                groupCostText.setText(Utility.formatMoney(((PieEntry) e).getValue()) + " " + getContext().getString(R.string.currency));
             }
 
             @Override
@@ -99,8 +99,8 @@ public class StatisticsFragment extends Fragment {
 
         groupRecyclerViewAdapter = new StatisticsGroupAdapter(groupSum);
 
-        allAddedText.setText(Utility.formatMoney(Utility.getAllAddedMoney(getContext())));
-        allSpentText.setText(Utility.formatMoney(Utility.getAllSpentMoney(getContext())));
+        allAddedText.setText(Utility.formatMoney(Utility.getAllAddedMoney(getContext())) + " " + getContext().getString(R.string.currency));
+        allSpentText.setText(Utility.formatMoney(Utility.getAllSpentMoney(getContext())) + " " + getContext().getString(R.string.currency));
 
         return rootView;
 

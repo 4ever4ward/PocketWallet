@@ -193,20 +193,19 @@ public class ExpenseFragment extends Fragment {
         expenseListView.setAdapter(expenseAdapter);
 
         // Update textView
-        rCashMoneyTextView.setText(Utility.formatMoney(MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, 0)) + "  UAH");
-        rCardMoneyTextView.setText(Utility.formatMoney(MainActivity.mSettings.getFloat(MainActivity.CARD_REMAINING_MONEY, 0)) + "  UAH");
+        rCashMoneyTextView.setText(Utility.formatMoney(MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, 0)) + " " + getString(R.string.currency));
+        rCardMoneyTextView.setText(Utility.formatMoney(MainActivity.mSettings.getFloat(MainActivity.CARD_REMAINING_MONEY, 0)) + " " + getString(R.string.currency));
 
 
         // Update sum of daily expense list
         double totalSum = Utility.cashMemoSum(expensesDbHelper.getAllExpenseAsList(
-                AppDBContract.ExpensesEntry.TABLE_NAME,
                 AppDBContract.ExpensesEntry.COLUMN_EXPENSE_DATE,
                 Long.toString(dayStart.getMillis()),
                 Long.toString(dayEnd.getMillis())
         ));
 
 
-        footerText.setText(String.format(resources.getString(R.string.total_spending_cost), Utility.formatMoney((float) totalSum)) + "  UAH");
+        footerText.setText(String.format(resources.getString(R.string.total_spending_cost), Utility.formatMoney((float) totalSum)) + " " + getString(R.string.currency));
 
     }
 

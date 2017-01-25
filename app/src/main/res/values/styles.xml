@@ -18,6 +18,21 @@
 
     </style>
 
+
+    <style name="AppSpinnerTheme" parent="Theme.AppCompat.Light">
+        <item name="android:background">@color/colorBezh</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+    <style name="AppSwitchTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:switchTextOn">true</item>
+        <item name="colorSwitchThumbNormal">@android:color/darker_gray</item>
+        <item name="android:colorForeground">@android:color/darker_gray</item>
+    </style>
+
     <style name="AppDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/colorPrimary</item>
         <!--<item name="android:textColorSecondary">@color/colorPrimaryDark</item>-->

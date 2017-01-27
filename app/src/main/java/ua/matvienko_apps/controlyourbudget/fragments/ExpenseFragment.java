@@ -33,6 +33,8 @@ import ua.matvienko_apps.controlyourbudget.data.AppDBHelper;
  */
 public class ExpenseFragment extends Fragment {
 
+    private final String TAG = ExpenseFragment.class.getSimpleName();
+
     private ListView expenseListView;
     private AppDBHelper expensesDbHelper;
     private TextView footerText;
@@ -212,6 +214,8 @@ public class ExpenseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        DateTime now = new DateTime();
 
         expenseListView.startLayoutAnimation();
         bookmarksLayout.startLayoutAnimation();

@@ -8,20 +8,17 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import java.util.List;
-
 import ua.matvienko_apps.controlyourbudget.R;
-import ua.matvienko_apps.controlyourbudget.classes.Expense;
-import ua.matvienko_apps.controlyourbudget.data.AppDBContract;
-import ua.matvienko_apps.controlyourbudget.data.AppDBHelper;
-import ua.matvienko_apps.controlyourbudget.fragments.AddFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.ExpenseFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.IncomeFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.PiggyFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.StatisticsFragment;
+import ua.matvienko_apps.controlyourbudget.services.DelayedTaskService;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     public static SharedPreferences mSettings;
     public final String APP_PREFERENCES = "WalletPreferences";
@@ -54,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         e.putBoolean("hasVisited", true);
 
+        // Start service for search delayed tasks and remind about it
+        DelayedTaskService.setServiceAlarm(getApplicationContext(), true);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
@@ -76,10 +75,6 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new PiggyFragment()).commit();
                         break;
                     }
-//                    case R.id.action_search: {
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new SearchFragment()).commit();
-//                        break;
-//                    }
                     case R.id.action_settings: {
                         getSupportFragmentManager().beginTransaction().replace(R.id.contentContainer, new StatisticsFragment()).commit();
                         break;
@@ -89,14 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    private void startService() {
-        AppDBHelper dbHelper = new AppDBHelper(getApplicationContext(), AppDBContract.DB_NAME, null, AppDBHelper.DB_VERSION);
-        List<Expense> repeatedExpensesList = dbHelper.getAllExpenseAsList(AppDBContract.ExpensesEntry.COLUMN_EXPENSE_REPEAT,
-                Integer.toString(AddFragment.REPEAT_DAILY),
-                Integer.toString(AddFragment.REPEAT_ANNUALLY));
-
     }
 
 }

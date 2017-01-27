@@ -68,7 +68,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + AppDBContract.ExpensesEntry.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + AppDBContract.IncomeEntry.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + AppDBContract.GroupsEntry.TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + AppDBContract.ShopListEntry.TABLE_NAME);
             onCreate(db);
         }
     }
@@ -225,12 +224,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return expenseList;
     }
 
-    public List<Expense> getAllExpenseAsList(String columnName, String value) {
+    public List<Expense> getAllRepeatingExpenseAsList() {
         List<Expense> expenseIncomeList = new ArrayList<Expense>();
 
         String query = "SELECT * FROM " + AppDBContract.ExpensesEntry.TABLE_NAME
                 + " WHERE "
-                + columnName + " = " + value
+                + AppDBContract.ExpensesEntry.COLUMN_EXPENSE_REPEAT + " != " + "-1"
                 + " ORDER BY "
                 + COLUMN_EXPENSE_DATE + " ASC";
 

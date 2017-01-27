@@ -24,7 +24,6 @@ import android.widget.Toast;
 import org.joda.time.DateTime;
 
 import ua.matvienko_apps.controlyourbudget.R;
-import ua.matvienko_apps.controlyourbudget.Utility;
 import ua.matvienko_apps.controlyourbudget.activity.AddGroupDialogActivity;
 import ua.matvienko_apps.controlyourbudget.activity.MainActivity;
 import ua.matvienko_apps.controlyourbudget.adapters.GroupAdapter;
@@ -59,13 +58,6 @@ public class AddFragment extends Fragment {
 
     private SwitchCompat repeatSwitch;
     private Spinner repeatTypeSpinner;
-
-
-    public static int REPEAT_DAILY = 0;
-    public static int REPEAT_WEEKLY = 1;
-    public static int REPEAT_MONTHLY = 2;
-    public static int REPEAT_ANNUALLY = 3;
-
 
 
     @Override
@@ -321,10 +313,14 @@ public class AddFragment extends Fragment {
         if (!appDBHelper.getAllGroupCursor(expenseGroup).moveToFirst()) {
 
             appDBHelper.addGroup(new Group(getString(R.string.new_group_name), expenseGroup));
-            appDBHelper.addGroup(new Group(getString(R.string.eat_group_name), expenseGroup, Utility.HIGH_PRIORITY));
-            appDBHelper.addGroup(new Group(getString(R.string.fastfood_group_name), expenseGroup, Utility.LOW_PRIORITY));
-            appDBHelper.addGroup(new Group(getString(R.string.drinks_group_name), expenseGroup, Utility.LOW_PRIORITY));
-            appDBHelper.addGroup(new Group(getString(R.string.fruits_group_name), expenseGroup, Utility.NORMAL_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.eat_group_name), expenseGroup, Group.HIGH_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.fastfood_group_name), expenseGroup, Group.LOW_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.drinks_group_name), expenseGroup, Group.LOW_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.fruits_group_name), expenseGroup, Group.NORMAL_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.transport_group_name), expenseGroup, Group.HIGH_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.car_group_name), expenseGroup, Group.HIGH_PRIORITY));
+            appDBHelper.addGroup(new Group(getString(R.string.fuel_group_name), expenseGroup, Group.HIGH_PRIORITY));
+
         }
 
         incomeGroup = getString(R.string.income_group_type);

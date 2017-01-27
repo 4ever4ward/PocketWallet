@@ -5,6 +5,11 @@ package ua.matvienko_apps.controlyourbudget.classes;
  */
 
 public class Group {
+
+    public static final int LOW_PRIORITY = 1;
+    public static final int NORMAL_PRIORITY = 2;
+    public static final int HIGH_PRIORITY = 3;
+
     private String groupName;
     private String groupType;
     private float groupPrice;

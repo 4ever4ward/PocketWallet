@@ -29,11 +29,6 @@ import static ua.matvienko_apps.controlyourbudget.data.AppDBHelper.DB_VERSION;
 
 public class Utility {
 
-
-    public static final int LOW_PRIORITY = 1;
-    public static final int NORMAL_PRIORITY = 2;
-    public static final int HIGH_PRIORITY = 3;
-
     public static final int CASH = 1;
     public static final int CARD = 2;
     public static final int PIGGY = 3;
@@ -228,19 +223,42 @@ public class Utility {
      * @param context Context
      * @return Returns the drawable, which depends from groupName
      */
-    public static int getIconIdByGroupName (String groupName, Context context) {
+    public static int getIconIdByGroupName(String groupName, Context context) {
 
         if (groupName.equals(context.getString(R.string.fastfood_group_name))) {
+
             return R.drawable.ic_expense_group_fastfood;
+
         } else if (groupName.equals(context.getString(R.string.drinks_group_name))) {
+
             return R.drawable.ic_expense_group_drinks;
+
         } else if (groupName.equals(context.getString(R.string.eat_group_name))) {
+
             return R.drawable.ic_expense_group_eat;
+
         } else if (groupName.equals(context.getString(R.string.new_group_name))) {
+
             return R.drawable.ic_add_white;
+
         } else if (groupName.equals(context.getString(R.string.fruits_group_name))) {
+
             return R.drawable.ic_expense_group_fruits;
+
+        } else if (groupName.equals(context.getString(R.string.car_group_name))) {
+
+            return R.drawable.ic_expense_group_car;
+
+        } else if (groupName.equals(context.getString(R.string.transport_group_name))) {
+
+            return R.drawable.ic_expense_group_transport;
+
+        } else if (groupName.equals(context.getString(R.string.fuel_group_name))) {
+
+            return R.drawable.ic_expense_group_fuel;
+
         }
+
         return -1;
     }
 
@@ -250,11 +268,11 @@ public class Utility {
     }
 
     public static int getColorByGroupPriority (int groupPriority, Context context) {
-        if (groupPriority == Utility.LOW_PRIORITY) {
+        if (groupPriority == Group.LOW_PRIORITY) {
             return ContextCompat.getColor(context, R.color.colorCyan);
-        } else if (groupPriority == Utility.NORMAL_PRIORITY) {
+        } else if (groupPriority == Group.NORMAL_PRIORITY) {
             return ContextCompat.getColor(context, R.color.colorGreen);
-        } else if (groupPriority == Utility.HIGH_PRIORITY) {
+        } else if (groupPriority == Group.HIGH_PRIORITY) {
             return ContextCompat.getColor(context, R.color.colorRed);
         }
         return Color.TRANSPARENT;

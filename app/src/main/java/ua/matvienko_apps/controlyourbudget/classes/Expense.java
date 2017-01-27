@@ -6,6 +6,11 @@ package ua.matvienko_apps.controlyourbudget.classes;
 
 public class Expense extends MoneyManager {
 
+    public static final int REPEAT_DAILY = 0;
+    public static final int REPEAT_WEEKLY = 1;
+    public static final int REPEAT_MONTHLY = 2;
+    public static final int REPEAT_ANNUALLY = 3;
+
     private int priority;
 
     private int repeat;

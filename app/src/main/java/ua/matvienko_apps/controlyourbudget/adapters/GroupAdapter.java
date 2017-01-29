@@ -20,17 +20,19 @@ import ua.matvienko_apps.controlyourbudget.Utility;
 
 public class GroupAdapter extends CursorAdapter {
 
-    public final String GROUP_ADAPTER_TAG = "GroupAdapter";
+    private final String TAG = "GroupAdapter";
+
+    private Cursor cursor;
 
     public static int COL_GROUP_NAME = 1;
     public static int COL_GROUP_TYPE = 2;
     public static int COL_GROUP_PRIORITY = 3;
 
-    public class ViewHolder {
-        public final TextView groupNameView;
-         public final ImageView groupImageView;
+    private class ViewHolder {
+        final TextView groupNameView;
+        final ImageView groupImageView;
 
-        public ViewHolder (View view) {
+        ViewHolder(View view) {
             groupNameView = (TextView) view.findViewById(R.id.groupNameText);
             groupImageView = (ImageView) view.findViewById(R.id.groupImageView);
         }
@@ -39,6 +41,8 @@ public class GroupAdapter extends CursorAdapter {
 
     public GroupAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
+
+        this.cursor = c;
     }
 
     @Override
@@ -62,12 +66,12 @@ public class GroupAdapter extends CursorAdapter {
             int groupPriority = cursor.getInt(COL_GROUP_PRIORITY);
             view.findViewById(R.id.groupNameContainer).setBackgroundColor(Utility.getColorByGroupPriority(groupPriority, context));
         } catch (Resources.NotFoundException ex) {
-            Log.e(GROUP_ADAPTER_TAG, "No image resources for this group");
+            Log.e(TAG, "No image resources for this group");
         }
         try {
             viewHolder.groupImageView.setImageResource(Utility.getIconIdByGroupName(groupName, context));
         } catch (Resources.NotFoundException ex) {
-            Log.e(GROUP_ADAPTER_TAG, "No image resources for this group");
+            Log.e(TAG, "No image resources for this group");
         }
     }
 

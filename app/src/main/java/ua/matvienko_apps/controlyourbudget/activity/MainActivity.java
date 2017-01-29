@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     public static SharedPreferences mSettings;
-    public final String APP_PREFERENCES = "WalletPreferences";
+    public static final String APP_PREFERENCES = "WalletPreferences";
     public static final String CASH_REMAINING_MONEY = "CashRemainingMoney";
     public static final String CARD_REMAINING_MONEY = "CardRemainingMoney";
     public static final String PIGGY_MONEY = "PiggyMoney";

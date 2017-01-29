@@ -1,5 +1,6 @@
 package ua.matvienko_apps.controlyourbudget.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -7,7 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 import ua.matvienko_apps.controlyourbudget.R;
 import ua.matvienko_apps.controlyourbudget.activity.AddGroupDialogActivity;
 import ua.matvienko_apps.controlyourbudget.activity.MainActivity;
@@ -37,17 +39,14 @@ import ua.matvienko_apps.controlyourbudget.data.AppDBHelper;
 import static ua.matvienko_apps.controlyourbudget.Utility.CARD;
 import static ua.matvienko_apps.controlyourbudget.Utility.CASH;
 
-/**
- * Created by alex_ on 09-Sep-16.
- */
-
 public class AddFragment extends Fragment {
 
     private GridView groupGridView;
     private EditText itemNameView;
     private EditText itemCostView;
     private DateTime mDateTimeNow;
-    AppDBHelper appDBHelper;
+    private AppDBHelper appDBHelper;
+    private GroupAdapter groupAdapter;
     private String expenseGroup;
     private String incomeGroup;
     private String itemGroup;
@@ -60,11 +59,15 @@ public class AddFragment extends Fragment {
     private Spinner repeatTypeSpinner;
 
 
+    private final String TAG = AddFragment.class.getSimpleName();
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add, null);
 
-        editor = MainActivity.mSettings.edit();
+        SharedPreferences mSettings = getActivity().getSharedPreferences(MainActivity.APP_PREFERENCES, Context.MODE_PRIVATE);
+        editor = mSettings.edit();
 
         itemNameView = (EditText) rootView.findViewById(R.id.addExpenseName);
         itemCostView = (EditText) rootView.findViewById(R.id.addExpenseCost);
@@ -73,8 +76,6 @@ public class AddFragment extends Fragment {
         repeatTypeSpinner = (Spinner) rootView.findViewById(R.id.repeat_type_spinner);
 
         repeatTypeSpinner.setEnabled(false);
-        repeatTypeSpinner.setPressed(false);
-
         repeatTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -87,7 +88,6 @@ public class AddFragment extends Fragment {
             }
         });
 
-
         repeatSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -98,13 +98,10 @@ public class AddFragment extends Fragment {
                 } else {
                     repeatSwitch.setTextColor(getResources().getColor(R.color.colorDarkerGray));
                     repeatTypeSpinner.setEnabled(false);
-//                    REPEAT_TYPE = -1;
                 }
 
             }
         });
-
-        groupGridView.setNumColumns(3);
 
 
         appDBHelper = new AppDBHelper(getContext(),
@@ -146,10 +143,6 @@ public class AddFragment extends Fragment {
         //next he can change it
         cashImageView.callOnClick();
 
-        // Init start groups
-        initStartGroups();
-
-
         final String fragmentName = getActivity().getIntent().getStringExtra("FragmentName");
 
 
@@ -160,17 +153,29 @@ public class AddFragment extends Fragment {
                 String name = itemNameView.getText().toString();
                 String group = itemGroup;
 
+                // Add new element
                 AddItem(fragmentName, addType, name, group);
+                groupGridView.setSelected(false);
+
+                // Update old element
+                Intent intent = getActivity().getIntent();
+                if (intent.hasExtra("ExpenseID")) {
+                    appDBHelper.updateExpense(intent.getIntExtra("ExpenseID", -1),
+                            AppDBContract.ExpensesEntry.COLUMN_EXPENSE_REPEAT,
+                            String.valueOf(-1));
+                }
             }
         });
-
         btnCancelAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                groupGridView.setSelected(false);
                 getActivity().finish();
             }
         });
 
+
+        groupGridView.setNumColumns(3);
         groupGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -187,9 +192,23 @@ public class AddFragment extends Fragment {
             }
         });
 
+
+        // Init start groups
+        initStartGroups();
+
         return rootView;
     }
 
+    public int getGroupItemIndexByName(String groupType, String name) {
+
+        List<Group> groupList = appDBHelper.getAllGroupAsList(groupType);
+
+        for (int i = 0; i < groupList.size(); i++) {
+            if (groupList.get(i).getGroupName().equals(name))
+                return i;
+        }
+        return -1;
+    }
 
     public void AddItem(String FragmentName, int addType, String name, String type) {
 
@@ -202,8 +221,6 @@ public class AddFragment extends Fragment {
 
                 if (!repeatSwitch.isChecked())
                     REPEAT_TYPE = -1;
-
-                Log.e("TAG", REPEAT_TYPE + "");
 
                 if (rMoney > (float) cost) {
                     addExpense(addType,
@@ -243,7 +260,7 @@ public class AddFragment extends Fragment {
 
         Cursor allGroupsCursor = appDBHelper.getAllGroupCursor(groupType);
 
-        GroupAdapter groupAdapter = new GroupAdapter(getContext(), allGroupsCursor, 0);
+        groupAdapter = new GroupAdapter(getContext(), allGroupsCursor, 0);
         groupGridView.setAdapter(groupAdapter);
 
     }
@@ -348,6 +365,32 @@ public class AddFragment extends Fragment {
         }
 
         updateGridViewFromDB(groupType);
+
+        Intent intent = getActivity().getIntent();
+        if (intent.hasExtra("ExpenseID")) {
+
+            groupGridView.setSelected(true);
+
+            Expense expense = appDBHelper.getExpenseByID(intent.getIntExtra("ExpenseID", -1));
+
+            // Set expense name from notification as default
+            itemNameView.setText(expense.getName());
+
+            // Set expense cost from notification as cost
+            itemCostView.setText(Double.toString(expense.getCost()));
+
+            // Activity launched from notification, so it's repeating expense
+            repeatSwitch.setChecked(true);
+
+            // Set type of expense repeating as default
+            repeatTypeSpinner.setSelection(expense.getRepeat());
+
+//            // Find group index in GridView by name and set it as default
+
+            groupGridView.setItemChecked(getGroupItemIndexByName(groupType, expense.getGroup()), true);
+            itemGroup = expense.getGroup();
+            groupAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

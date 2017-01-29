@@ -144,30 +144,43 @@ public class AppDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Group> getAllGroupAsList() {
-        List<Group> groupList = new ArrayList<Group>();
+    public void updateExpense(int id, String col, String val) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
-        String query = "SELECT * FROM "
-                + AppDBContract.GroupsEntry.TABLE_NAME
-                +" ORDER BY "
-                + " _id" + " DESC";
+        ContentValues values = new ContentValues();
+
+        values.put(col, val);
+
+        db.update(AppDBContract.ExpensesEntry.TABLE_NAME, values,
+                AppDBContract.ExpensesEntry.COLUMN_EXPENSE_ID + " = ?",
+                new String[]{String.valueOf(id)});
+
+        db.close();
+    }
+
+    public Expense getExpenseByID(int id) {
+
+        String query = "SELECT * FROM " + AppDBContract.ExpensesEntry.TABLE_NAME
+                + " WHERE "
+                + AppDBContract.ExpensesEntry.COLUMN_EXPENSE_ID + " == " + id;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
-        if (cursor.moveToFirst()) {
-            do {
-                Group group = new Group(cursor.getString(1),
-                        cursor.getString(2));
+        Expense expense = null;
 
-                groupList.add(group);
-            } while (cursor.moveToNext());
+        if (cursor.moveToFirst()) {
+            expense = new Expense(cursor.getLong(1),
+                    cursor.getString(2),
+                    cursor.getString(3),
+                    cursor.getDouble(4),
+                    cursor.getInt(5),
+                    cursor.getInt(0));
         }
 
         db.close();
         cursor.close();
-        return groupList;
-
+        return expense;
     }
 
     public List<Income> getAllIncomeAsList() {
@@ -210,10 +223,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Expense expense = new Expense(Long.parseLong(cursor.getString(1)),
+                Expense expense = new Expense(cursor.getLong(1),
                         cursor.getString(2),
                         cursor.getString(3),
-                        Double.parseDouble(cursor.getString(4)), 0);
+                        cursor.getDouble(4),
+                        cursor.getInt(5),
+                        cursor.getInt(0));
 
                 expenseList.add(expense);
             } while (cursor.moveToNext());
@@ -238,11 +253,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Expense expenseIncome = new Expense(Long.parseLong(cursor.getString(1)),
+                Expense expenseIncome = new Expense(cursor.getLong(1),
                         cursor.getString(2),
                         cursor.getString(3),
-                        Double.parseDouble(cursor.getString(4)),
-                        Integer.parseInt(cursor.getString(5)));
+                        cursor.getDouble(4),
+                        cursor.getInt(5),
+                        cursor.getInt(0));
 
                 expenseIncomeList.add(expenseIncome);
             } while (cursor.moveToNext());
@@ -268,11 +284,12 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Expense expenseIncome = new Expense(Long.parseLong(cursor.getString(1)),
+                Expense expenseIncome = new Expense(cursor.getLong(1),
                         cursor.getString(2),
                         cursor.getString(3),
-                        Double.parseDouble(cursor.getString(4)),
-                        Integer.parseInt(cursor.getString(5)));
+                        cursor.getDouble(4),
+                        cursor.getInt(5),
+                        cursor.getInt(0));
 
                 expenseIncomeList.add(expenseIncome);
             } while (cursor.moveToNext());
@@ -281,6 +298,60 @@ public class AppDBHelper extends SQLiteOpenHelper {
         db.close();
         cursor.close();
         return expenseIncomeList;
+    }
+
+    public List<Group> getAllGroupAsList(String groupType) {
+        ArrayList<Group> groupArrayList = new ArrayList<Group>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(AppDBContract.GroupsEntry.TABLE_NAME,
+                null,
+                AppDBContract.GroupsEntry.COLUMN_GROUP_TYPE + " =?",
+                new String[]{groupType},
+                null,
+                null,
+                "_id" + " ASC");
+
+        if (cursor.moveToFirst()) {
+            do {
+                Group group = new Group(
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getInt(3));
+
+                groupArrayList.add(group);
+            } while (cursor.moveToNext());
+        }
+
+        db.close();
+        cursor.close();
+        return groupArrayList;
+    }
+
+    public List<Group> getAllGroupAsList() {
+        List<Group> groupList = new ArrayList<Group>();
+
+        String query = "SELECT * FROM "
+                + AppDBContract.GroupsEntry.TABLE_NAME
+                + " ORDER BY "
+                + " _id" + " DESC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Group group = new Group(cursor.getString(1),
+                        cursor.getString(2));
+
+                groupList.add(group);
+            } while (cursor.moveToNext());
+        }
+
+        db.close();
+        cursor.close();
+        return groupList;
+
     }
 
     public ArrayList<String> getAllUsedGroup() {
@@ -312,7 +383,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
         cursor.close();
         return usedGroupName;
     }
-
 
     public List<ShopItem> getAllShopItemAsList() {
         List<ShopItem> shopItems = new ArrayList<ShopItem>();
@@ -383,7 +453,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 "_id" + " ASC");
     }
 
-
     public Cursor getAllCursor(String tableName, String col, String val, long startDate, long endDate) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(tableName,
@@ -397,7 +466,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 AppDBContract.ExpensesEntry.COLUMN_EXPENSE_DATE + " DESC");
     }
 
-
     public Cursor getAllCursor(String tableName, String col, String val) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(tableName,
@@ -408,7 +476,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 null,
                 AppDBContract.ExpensesEntry.COLUMN_EXPENSE_DATE + " DESC");
     }
-
 
     public Cursor getAllCursor(long startDate, long endDate, String tableName) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -442,27 +509,5 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public void delete(String tableName, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(tableName, AppDBContract.IncomeEntry.COLUMN_INCOME_ID + " = " + id, null);
-    }
-
-    public int getGroupsCount(String groupType) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.query(AppDBContract.GroupsEntry.TABLE_NAME,
-                null,
-                AppDBContract.GroupsEntry.COLUMN_GROUP_TYPE + " =?",
-                new String[] {groupType},
-                null,
-                null,
-                "_id DESC").getCount();
-    }
-
-    public Cursor getGroupById(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.query(AppDBContract.GroupsEntry.TABLE_NAME,
-                null,
-                AppDBContract.GroupsEntry.COLUMN_GROUP_ID + " =?",
-                new String[] {Integer.toString(id)},
-                null,
-                null,
-                null);
     }
 }

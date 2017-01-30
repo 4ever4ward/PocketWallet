@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +21,14 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ua.matvienko_apps.controlyourbudget.R;
 import ua.matvienko_apps.controlyourbudget.Utility;
 import ua.matvienko_apps.controlyourbudget.adapters.StatisticsGroupAdapter;
 import ua.matvienko_apps.controlyourbudget.classes.Group;
+import ua.matvienko_apps.controlyourbudget.data.AppDBContract;
+import ua.matvienko_apps.controlyourbudget.data.AppDBHelper;
 
 /**
  * Created by alex_ on 12-Sep-16.
@@ -31,14 +36,14 @@ import ua.matvienko_apps.controlyourbudget.classes.Group;
 
 public class StatisticsFragment extends Fragment {
 
-    PieChart circleChart;
-    ArrayList<Group> groupSum;
-    StatisticsGroupAdapter groupRecyclerViewAdapter;
+    private final String TAG = StatisticsFragment.class.getSimpleName();
 
-    TextView groupNameText;
-    TextView groupCostText;
-    TextView allAddedText;
-    TextView allSpentText;
+    private PieChart circleChart;
+    private ArrayList<Group> groupSum;
+    private StatisticsGroupAdapter groupRecyclerViewAdapter;
+
+    private TextView allAddedText;
+    private TextView allSpentText;
 
     View rootView;
 
@@ -56,14 +61,21 @@ public class StatisticsFragment extends Fragment {
 
         circleChart = (PieChart) rootView.findViewById(R.id.circleChart);
 
-        groupNameText = (TextView) rootView.findViewById(R.id.groupName);
-        groupCostText = (TextView) rootView.findViewById(R.id.groupCost);
-        allAddedText = (TextView) rootView.findViewById(R.id.all_of_added_moneys);
-        allSpentText = (TextView) rootView.findViewById(R.id.all_of_spent_moneys);
+        AppDBHelper appDBHelper = new AppDBHelper(getContext(), AppDBContract.DB_NAME, null, AppDBHelper.DB_VERSION);
+
+        List<Group> expenseGroupSum = appDBHelper.getAllGroupAsList(getString(R.string.expense_group_type));
+        if (expenseGroupSum.size() > 0)
+            expenseGroupSum.remove(0);
+        groupRecyclerViewAdapter = new StatisticsGroupAdapter(getContext(), Utility.getAllExpenseGroupsCashSum(getContext()));
+
+        final RecyclerView expenseGroupsList = (RecyclerView) rootView.findViewById(R.id.expenseGroups);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        expenseGroupsList.setAdapter(groupRecyclerViewAdapter);
+        expenseGroupsList.setLayoutManager(linearLayoutManager);
+
 
         ArrayList<PieEntry> entries = new ArrayList<>();
-
-        groupSum = Utility.getGroupsCashSum(getContext());
+        groupSum = Utility.getUsedGroupsCashSum(getContext());
 
         if (groupSum != null) {
 
@@ -71,6 +83,7 @@ public class StatisticsFragment extends Fragment {
                 entries.add(new PieEntry(groupSum.get(i).getGroupPrice(), groupSum.get(i).getGroupName()));
             }
         }
+
 
 
         PieDataSet dataset = new PieDataSet(entries, "# of Calls");
@@ -87,20 +100,27 @@ public class StatisticsFragment extends Fragment {
         circleChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                groupNameText.setText(((PieEntry) e).getLabel());
-                groupCostText.setText(Utility.formatMoney(((PieEntry) e).getValue()) + " " + getContext().getString(R.string.currency));
+
+                String groupName = ((PieEntry) e).getLabel();
+                List<Group> groupList = Utility.getAllExpenseGroupsCashSum(getContext());
+
+                for (int i = 0; i < groupList.size(); i++) {
+                    if (groupList.get(i).getGroupName().equals(groupName)) {
+                        expenseGroupsList.setScrollingTouchSlop(1);
+                        expenseGroupsList.smoothScrollToPosition(i);
+                    }
+                }
+
             }
 
             @Override
             public void onNothingSelected() {
-
+                expenseGroupsList.smoothScrollToPosition(0);
             }
         });
 
-        groupRecyclerViewAdapter = new StatisticsGroupAdapter(groupSum);
-
-        allAddedText.setText(Utility.formatMoney(Utility.getAllAddedMoney(getContext())) + " " + getContext().getString(R.string.currency));
-        allSpentText.setText(Utility.formatMoney(Utility.getAllSpentMoney(getContext())) + " " + getContext().getString(R.string.currency));
+//        allAddedText.setText(Utility.formatMoney(Utility.getAllAddedMoney(getContext())) + " " + getContext().getString(R.string.currency));
+//        allSpentText.setText(Utility.formatMoney(Utility.getAllSpentMoney(getContext())) + " " + getContext().getString(R.string.currency));
 
         return rootView;
 

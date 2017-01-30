@@ -21,14 +21,14 @@ import ua.matvienko_apps.controlyourbudget.data.AppDBContract;
 import ua.matvienko_apps.controlyourbudget.data.AppDBHelper;
 import ua.matvienko_apps.controlyourbudget.fragments.ExpenseFragment;
 
-public class DelayedTaskService extends IntentService {
+public class DelayedExpenseService extends IntentService {
 
-    private static final String TAG = DelayedTaskService.class.getSimpleName();
+    private static final String TAG = DelayedExpenseService.class.getSimpleName();
 
     // Interval for repeat service
     private static final int INTERVAL = 1000 * 60 * 10;// * 10; // millis * sec * min
 
-    public DelayedTaskService() {
+    public DelayedExpenseService() {
         super(TAG);
     }
 
@@ -115,7 +115,7 @@ public class DelayedTaskService extends IntentService {
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(expense.getName() + "   " + Utility.formatMoney((float) expense.getCost()))
                 .setContentIntent(pIntent)
-                .setAutoCancel(false)
+                .setAutoCancel(true)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -123,7 +123,7 @@ public class DelayedTaskService extends IntentService {
     }
 
     public static void setServiceAlarm(Context context, boolean isOn) {
-        Intent intent = new Intent(context, DelayedTaskService.class);
+        Intent intent = new Intent(context, DelayedExpenseService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);

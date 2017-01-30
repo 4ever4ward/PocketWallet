@@ -13,7 +13,8 @@ import ua.matvienko_apps.controlyourbudget.fragments.ExpenseFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.IncomeFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.PiggyFragment;
 import ua.matvienko_apps.controlyourbudget.fragments.StatisticsFragment;
-import ua.matvienko_apps.controlyourbudget.services.DelayedTaskService;
+import ua.matvienko_apps.controlyourbudget.services.DelayedExpenseService;
+import ua.matvienko_apps.controlyourbudget.services.DelayedIncomeService;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
         e.putBoolean("hasVisited", true);
 
         // Start service for search delayed tasks and remind about it
-        DelayedTaskService.setServiceAlarm(getApplicationContext(), true);
+        DelayedExpenseService.setServiceAlarm(getApplicationContext(), true);
+        DelayedIncomeService.setServiceAlarm(getApplicationContext(), true);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);

@@ -1,115 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:background="@color/colorBezh">
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/circleChart"
             android:layout_width="190dp"
             android:layout_height="190dp"
-            android:layout_marginTop="10dp"
             android:layout_gravity="center_vertical|center_horizontal"
             app:egAutoCenter="true"
             app:egDrawValueInPie="false"
-            app:egUseCustomInnerValue="false"/>
+            app:egUseCustomInnerValue="false" />
 
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:elevation="3dp">
 
-
-        <FrameLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/expenseGroups"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:background="@color/colorAccent">
-
-            <TextView
-                android:id="@+id/groupName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_gravity="start|center_vertical"
-                android:textColor="@color/colorBezh"
-                android:text="Eat"/>
-            <TextView
-                android:id="@+id/groupCost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="end|center_vertical"
-                android:textColor="@color/colorBezh"
-                android:text="1 000.00 UAH"/>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginTop="35dp"
-            android:background="@color/colorMaterialRed">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_gravity="start|center_vertical"
-                android:textColor="@color/colorBezh"
-                android:text="All spent money's"/>
-
-            <TextView
-                android:id="@+id/all_of_spent_moneys"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="end|center_vertical"
-                android:textColor="@color/colorBezh"
-                android:text="1 500.00 UAH"/>
-
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginTop="70dp"
-            android:background="@color/colorAccent"
-            android:elevation="4dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_gravity="start|center_vertical"
-                android:textColor="@color/colorBezh"
-                android:text="All added money's"/>
-
-            <TextView
-                android:id="@+id/all_of_added_moneys"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="end|center_vertical"
-                android:textColor="@color/colorBezh"
-                android:text="2 000.00 UAH"/>
-
-        </FrameLayout>
-
-
+            android:layout_height="135dp"
+            android:layout_gravity="center_horizontal" />
 
 
     </FrameLayout>
-
 
 
 </LinearLayout>

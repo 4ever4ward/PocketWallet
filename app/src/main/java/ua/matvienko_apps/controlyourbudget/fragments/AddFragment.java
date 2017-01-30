@@ -157,13 +157,6 @@ public class AddFragment extends Fragment {
                 AddItem(fragmentName, addType, name, group);
                 groupGridView.setSelected(false);
 
-                // Update old element
-                Intent intent = getActivity().getIntent();
-                if (intent.hasExtra("ExpenseID")) {
-                    appDBHelper.updateExpense(intent.getIntExtra("ExpenseID", -1),
-                            AppDBContract.ExpensesEntry.COLUMN_EXPENSE_REPEAT,
-                            String.valueOf(-1));
-                }
             }
         });
         btnCancelAdd.setOnClickListener(new View.OnClickListener() {
@@ -184,10 +177,12 @@ public class AddFragment extends Fragment {
                 if (i == 0) {
                     Intent intent = new Intent(getActivity(), AddGroupDialogActivity.class);
                     startActivity(intent);
+                    groupGridView.smoothScrollToPosition(i);
                     // if pressed another group_item
                 } else {
                     TextView text = (TextView) view.findViewById(R.id.groupNameText);
                     itemGroup = text.getText().toString();
+                    groupGridView.smoothScrollToPosition(i);
                 }
             }
         });
@@ -214,13 +209,14 @@ public class AddFragment extends Fragment {
 
         if (!name.equals("") && type != null && !itemCostView.getText().toString().equals("")) {
 
+            if (!repeatSwitch.isChecked())
+                REPEAT_TYPE = -1;
+
+
             if (FragmentName.equals(ExpenseFragment.class.getSimpleName())) {
 
                 float rMoney = getRemainingMoneyBy(addType);
                 double cost = Double.parseDouble(itemCostView.getText().toString());
-
-                if (!repeatSwitch.isChecked())
-                    REPEAT_TYPE = -1;
 
                 if (rMoney > (float) cost) {
                     addExpense(addType,
@@ -237,7 +233,7 @@ public class AddFragment extends Fragment {
                 addIncome(addType,
                         name,
                         type,
-                        Double.parseDouble(itemCostView.getText().toString()));
+                        Double.parseDouble(itemCostView.getText().toString()), REPEAT_TYPE);
                 getActivity().finish();
             }
         } else {
@@ -284,11 +280,20 @@ public class AddFragment extends Fragment {
         Expense expense = new Expense(mDateTimeNow.getMillis(),
                 type,
                 name,
-                cost, REPEAT_TYPE);
+                cost,
+                repeat);
         appDBHelper.addExpense(expense);
+
+        // Update old element
+        Intent intent = getActivity().getIntent();
+        if (intent.hasExtra("ExpenseID")) {
+            appDBHelper.updateExpense(intent.getIntExtra("ExpenseID", -1),
+                    AppDBContract.ExpensesEntry.COLUMN_EXPENSE_REPEAT,
+                    String.valueOf(-1));
+        }
     }
 
-    public void addIncome(int addType, String name, String type, double cost) {
+    public void addIncome(int addType, String name, String type, double cost, int repeat) {
         if (addType == CASH) {
             float reMoney = MainActivity.mSettings.getFloat(MainActivity.CASH_REMAINING_MONEY, 0);
             float newReMoney = reMoney + (float) cost;
@@ -307,10 +312,17 @@ public class AddFragment extends Fragment {
         Income income = new Income(mDateTimeNow.getMillis(),
                 type,
                 name,
-                cost);
+                cost,
+                repeat);
         appDBHelper.addIncome(income);
 
-
+        // Update old element
+        Intent intent = getActivity().getIntent();
+        if (intent.hasExtra("IncomeID")) {
+            appDBHelper.updateIncome(intent.getIntExtra("IncomeID", -1),
+                    AppDBContract.IncomeEntry.COLUMN_INCOME_REPEAT,
+                    String.valueOf(-1));
+        }
     }
 
     public void addShopItem(String name, String type, double cost) {
@@ -389,6 +401,27 @@ public class AddFragment extends Fragment {
 
             groupGridView.setItemChecked(getGroupItemIndexByName(groupType, expense.getGroup()), true);
             itemGroup = expense.getGroup();
+            groupAdapter.notifyDataSetChanged();
+        } else if (intent.hasExtra("IncomeID")) {
+            groupGridView.setSelected(true);
+
+            Income income = appDBHelper.getIncomeByID(intent.getIntExtra("IncomeID", -1));
+
+            // Set income name from notification as default
+            itemNameView.setText(income.getName());
+
+            // Set income cost from notification as cost
+            itemCostView.setText(Double.toString(income.getCost()));
+
+            // Activity launched from notification, so it's repeating income
+            repeatSwitch.setChecked(true);
+
+            // Set type of income repeating as default
+            repeatTypeSpinner.setSelection(income.getRepeat());
+
+            // Find group index in GridView by name and set it as default
+            groupGridView.setItemChecked(getGroupItemIndexByName(groupType, income.getGroup()), true);
+            itemGroup = income.getGroup();
             groupAdapter.notifyDataSetChanged();
         }
     }

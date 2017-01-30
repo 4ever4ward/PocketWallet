@@ -14,7 +14,7 @@
 
         <FrameLayout
             android:id="@+id/calendarView"
-            android:layout_width="85dp"
+            android:layout_width="90dp"
             android:layout_height="85dp"
             android:layout_margin="16dp"
             android:background="@drawable/ic_calendar">
@@ -35,8 +35,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="27dp"
                 android:text="Nov"
                 android:textColor="@color/colorBezh"
                 android:textSize="14sp"

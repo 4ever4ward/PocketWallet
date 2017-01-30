@@ -25,6 +25,7 @@ public class AppDBContract {
         public static final String COLUMN_INCOME_GROUP = "type";
         public static final String COLUMN_INCOME_NAME = "name";
         public static final String COLUMN_INCOME_COST = "cost";
+        public static final String COLUMN_INCOME_REPEAT = "repeat";
     }
 
     public static final class GroupsEntry implements BaseColumns {

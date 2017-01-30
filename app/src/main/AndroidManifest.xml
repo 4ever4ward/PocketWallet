@@ -31,10 +31,12 @@
             android:theme="@style/AppDialogActivity" />
 
         <service
-            android:name=".services.DelayedTaskService"
+            android:name=".services.DelayedExpenseService"
             android:exported="false" />
 
-        <receiver android:name=".receivers.ExpenseNotification" />
+        <service
+            android:name=".services.DelayedIncomeService"
+            android:exported="false" />
     </application>
 
 </manifest>

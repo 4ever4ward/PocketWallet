@@ -2,6 +2,7 @@ package ua.matvienko_apps.controlyourbudget;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
@@ -54,7 +55,7 @@ public class Utility {
         float daySum = 0.0f;
 
         List<Income> incomeList = appDBHelper.getAllIncomeAsList();
-        incomeList.add(new Income(0,"","",0.0));
+        incomeList.add(new Income(0, "", "", 0.0, -1));
 
         series.addPoint(new ValueLinePoint("", 0f));
 
@@ -102,7 +103,7 @@ public class Utility {
      * @param context Context
      * @return List of Group with sum of all spent moneys
      */
-    public static ArrayList<Group> getGroupsCashSum(Context context) {
+    public static ArrayList<Group> getUsedGroupsCashSum(Context context) {
         AppDBHelper expenseDBHelper = new AppDBHelper(context, AppDBContract.ExpensesEntry.TABLE_NAME, null, 1);
         AppDBHelper groupDBHelper = new AppDBHelper(context, AppDBContract.GroupsEntry.TABLE_NAME, null, 1);
         Cursor expensesCursor;
@@ -157,6 +158,51 @@ public class Utility {
         return groupSum;
     }
 
+    public static List<Group> getAllExpenseGroupsCashSum(Context context) {
+        AppDBHelper appDBHelper = new AppDBHelper(context, AppDBContract.DB_NAME, null, AppDBHelper.DB_VERSION);
+
+        List<Group> groupList = appDBHelper.getAllGroupAsList(context.getString(R.string.expense_group_type));
+        if (groupList.size() > 0)
+            groupList.remove(0);
+
+        for (Group group : groupList) {
+            List<Expense> expenseList = appDBHelper.getAllExpenseAsList(
+                    AppDBContract.ExpensesEntry.COLUMN_EXPENSE_GROUP,
+                    group.getGroupName());
+
+            float cashSum = 0;
+            for (Expense expense : expenseList) {
+                cashSum += expense.getCost();
+            }
+
+            group.setGroupPrice(cashSum);
+
+        }
+
+        return groupList;
+    }
+
+//    public static List<Group> getAllIncomesGroupsCashSum(Context context) {
+//        AppDBHelper appDBHelper = new AppDBHelper(context, AppDBContract.DB_NAME, null, AppDBHelper.DB_VERSION);
+//
+//        List<Group> groupList = appDBHelper.getAllGroupAsList(context.getString(R.string.income_group_type));
+//        groupList.remove(0);
+//
+//        for (Group group: groupList) {
+//            List<Income> expenseList = appDBHelper.getAllIncomeAsList();
+//
+//            float cashSum = 0;
+//            for (Income income: expenseList) {
+//                cashSum += income.getCost();
+//            }
+//
+//            group.setGroupPrice(cashSum);
+//
+//        }
+//
+//        return groupList;
+//    }
+
     public static int isAllShopListItemChecked(Context context) {
         AppDBHelper appDBHelper = new AppDBHelper(context, AppDBContract.ShopListEntry.TABLE_NAME,
                 null, DB_VERSION);
@@ -206,24 +252,13 @@ public class Utility {
         editor.apply();
     }
 
-    // TODO: change uses of this function to moveMoney()
-    public static float takeMoneyFromPiggy(float amount) {
-        SharedPreferences.Editor editor = MainActivity.mSettings.edit();
-        float newPiggyValue = MainActivity.mSettings.getFloat(MainActivity.PIGGY_MONEY, 0) - amount;
-
-        editor.putFloat(MainActivity.PIGGY_MONEY, newPiggyValue);
-        editor.apply();
-
-        return amount;
-    }
-
     /**
      *
      * @param groupName The name of the group
      * @param context Context
      * @return Returns the drawable, which depends from groupName
      */
-    public static int getIconIdByGroupName(String groupName, Context context) {
+    public static int getIconIdByGroupName(String groupName, Context context) throws Resources.NotFoundException {
 
         if (groupName.equals(context.getString(R.string.fastfood_group_name))) {
 
@@ -256,6 +291,14 @@ public class Utility {
         } else if (groupName.equals(context.getString(R.string.fuel_group_name))) {
 
             return R.drawable.ic_expense_group_fuel;
+
+        } else if (groupName.equals(context.getString(R.string.salary_group_name))) {
+
+            return R.drawable.ic_income_group_salary;
+
+        } else if (groupName.equals(context.getString(R.string.bank_group_name))) {
+
+            return R.drawable.ic_income_group_bank;
 
         }
 
@@ -310,7 +353,7 @@ public class Utility {
      * @return All spent money with this priority
      */
     public static float getAllSpentMoneyByGroupPriority(Context context, int groupPriority) {
-        ArrayList<Group> groupSumList = getGroupsCashSum(context);
+        ArrayList<Group> groupSumList = getUsedGroupsCashSum(context);
         float result_sum = 0;
 
         assert groupSumList != null;

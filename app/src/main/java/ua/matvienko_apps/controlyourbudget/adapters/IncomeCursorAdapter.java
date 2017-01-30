@@ -1,6 +1,7 @@
 package ua.matvienko_apps.controlyourbudget.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,12 @@ public class IncomeCursorAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         DateTime dateTime;
+
+        try {
+            viewHolder.itemImage.setImageResource(Utility.getIconIdByGroupName(cursor.getString(COL_INCOME_GROUP), context));
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
 
         long dateMillis = cursor.getLong(COL_INCOME_DATE);
         dateTime = new DateTime(dateMillis);
